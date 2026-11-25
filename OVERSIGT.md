@@ -1,6 +1,6 @@
 # Tilbud
 
-Opdateret 25/11/2026 kl. 16:00. Data fra eTilbudsavis. Sorteret efter literpris, så forskellige størrelser kan sammenlignes. Priserne er uden pant.
+Opdateret 25/11/2026 kl. 16:47. Data fra eTilbudsavis. Sorteret efter pris pr. liter eller kg, så forskellige størrelser kan sammenlignes. Priserne er uden pant.
 
 ## 🥤 Pepsi Max
 
@@ -37,7 +37,7 @@ Opdateret 25/11/2026 kl. 16:00. Data fra eTilbudsavis. Sorteret efter literpris,
 | **11,24** | 3,71 | 365discount | 89,00 | 24 × 33 cl | ? | tor 19/11 – ons 25/11 |  |
 | **11,24** | 3,71 | Bilka | 89,00 | 24 × 33 cl | flaske | fre 20/11 – tor 26/11 | „flere varianter“, Pepsi Max ikke nævnt |
 | **11,99** | 3,96 | føtex | 95,00 | 24 × 33 cl | flaske | fre 13/11 – tor 26/11 |  |
-| **20,00** | 10,00 | Bilka | 10,00 | 50 cl | ? | fre 20/11 – tor 26/11 | flere størrelser: 50 cl–150 cl, „flere varianter“, Pepsi Max ikke nævnt |
+| **20,00** | 10,00 | Bilka | 10,00 | 50 cl | ? | fre 20/11 – tor 26/11 | max 12 stk, flere størrelser: 50 cl–150 cl, „flere varianter“, Pepsi Max ikke nævnt |
 | **26,00** | 13,00 | Brugsen | 13,00 | 50 cl | ? | fre 20/11 – tor 3/12 | flere størrelser: 50 cl–150 cl |
 
 ### Kommende
@@ -51,6 +51,46 @@ Opdateret 25/11/2026 kl. 16:00. Data fra eTilbudsavis. Sorteret efter literpris,
 | **12,37** | 4,08 | føtex | 49,00 | 12 × 33 cl | flaske | tir 1/12 – tor 31/12 |  |
 | **12,50** | 4,12 | føtex | 99,00 | 24 × 33 cl | dåse | fre 27/11 – tor 3/12 |  |
 
+## 🧈 Kærgården Let
+
+> **Billigst lige nu:** 60,00 kr/kg (12,00 kr/stk) hos SuperBrugsen – 200 g for 12,00 kr, fre 20/11 – tor 26/11
+
+### Dag for dag
+
+| Dag | Billigst | Kr/kg | Kr/stk | Pakning | Næstbedst |
+|---|---|---:|---:|---|---|
+| ons 25/11 | SuperBrugsen | **60,00** | 12,00 | 200 g | Kvickly 60,00 kr/kg (200 g) |
+| tor 26/11 | SuperBrugsen | **60,00** | 12,00 | 200 g | Kvickly 60,00 kr/kg (200 g) |
+| fre 27/11 | Brugsen | **80,00** | 16,00 | 200 g | Løvbjerg 84,95 kr/kg (200 g) |
+| lør 28/11 | Brugsen | **80,00** | 16,00 | 200 g | Løvbjerg 84,95 kr/kg (200 g) |
+| søn 29/11 | Brugsen | **80,00** | 16,00 | 200 g | Løvbjerg 84,95 kr/kg (200 g) |
+| man 30/11 | Brugsen | **80,00** | 16,00 | 200 g | Løvbjerg 84,95 kr/kg (200 g) |
+| tir 1/12 | Brugsen | **80,00** | 16,00 | 200 g | Løvbjerg 84,95 kr/kg (200 g) |
+| ons 2/12 | Brugsen | **80,00** | 16,00 | 200 g | Løvbjerg 84,95 kr/kg (200 g) |
+| tor 3/12 | REMA 1000 | **50,00** | 10,00 | 200 g | Brugsen 80,00 kr/kg (200 g) |
+| fre 4/12 | REMA 1000 | **50,00** | 10,00 | 200 g | Lidl 94,75 kr/kg (200 g) |
+| lør 5/12 | REMA 1000 | **50,00** | 10,00 | 200 g | Lidl 94,75 kr/kg (200 g) |
+| søn 6/12 | Lidl | **94,75** | 18,95 | 200 g |  |
+| man 7/12 | Lidl | **94,75** | 18,95 | 200 g |  |
+| tir 8/12 | Lidl | **94,75** | 18,95 | 200 g |  |
+
+### Gælder nu
+
+| Kr/kg | Kr/stk | Butik | Pris | Pakning | Type | Periode | Noter |
+|---:|---:|---|---:|---|:-:|---|---|
+| **60,00** | 12,00 | SuperBrugsen | 12,00 | 200 g | ? | fre 20/11 – tor 26/11 | max 3 pakker, Kærgården Let ikke nævnt |
+| **60,00** | 12,00 | Kvickly | 12,00 | 200 g | ? | fre 20/11 – tor 26/11 | max 3 pakker, Kærgården Let ikke nævnt |
+| **80,00** | 16,00 | Brugsen | 16,00 | 200 g | ? | fre 20/11 – tor 3/12 | Kærgården Let ikke nævnt |
+| **94,75** | 18,95 | Lidl | 18,95 | 200 g | ? | søn 3/5 – tor 31/12 | Kærgården Let ikke nævnt |
+| **95,00** | 19,00 | føtex | 19,00 | 200 g | ? | fre 13/11 – tor 26/11 | Kærgården Let ikke nævnt |
+
+### Kommende
+
+| Kr/kg | Kr/stk | Butik | Pris | Pakning | Type | Periode | Noter |
+|---:|---:|---|---:|---|:-:|---|---|
+| **50,00** | 10,00 | REMA 1000 | 10,00 | 200 g | ? | tor 3/12 – lør 5/12 | max 6 stk, Kærgården Let ikke nævnt |
+| **84,95** | 16,99 | Løvbjerg | 16,99 | 200 g | ? | fre 27/11 – tor 3/12 | Kærgården Let ikke nævnt |
+
 ---
 
-Type: „?“ betyder, at avisen ikke skriver dåse eller flaske. Grænsebutikker er ikke med. Kalenderen `tilbud.ics` og alarmen er beskrevet i `LÆS MIG.md`.
+Type: „?“ betyder, at avisen ikke skriver dåse eller flaske. Grænsebutikker er ikke med. Kalenderen `tilbud.ics` og alarmen er beskrevet i `README.md`.

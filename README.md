@@ -2,7 +2,8 @@
 
 Holder øje med udvalgte varer i tilbudsaviserne (data fra eTilbudsavis) og sammenligner dem på
 **literpris**, så 24 × 33 cl, 20 × 33 cl og 0,5 l kan stå i samme liste. Stykprisen står ved siden af.
-Lige nu holdes der øje med Pepsi Max.
+Lige nu holdes der øje med Pepsi Max (pr. liter) og Kærgården Let (pr. kg, grænse 15 kr pr. pakke).
+I appen skifter du mellem varerne øverst.
 
 - **Webapp** – `index.html`, se nedenfor.
 - **[OVERSIGT.md](OVERSIGT.md)** – pr. vare: billigst lige nu, dag for dag de næste 14 dage, hvad der
@@ -135,11 +136,16 @@ Tilføj en blok under `"varer"` i `config.json`, fx:
 | `min_cl` / `max_cl` | Størrelser pr. stk, der tæller med (100 = 1 l; 1,5 l er dermed udelukket) |
 | `alarm_max_literpris` | Alarm ved nye tilbud til højst denne literpris (12 kr/l ≈ 4 kr pr. 33 cl) |
 | `kalender_max_literpris` | Kun tilbud til højst denne literpris kommer i kalenderen |
+| `enhed` | `"l"` (standard) eller `"kg"` for varer, der sælges efter vægt. Brug så `min_g` / `max_g` i stedet for `min_cl` / `max_cl` |
+| `alarm_max_pris` / `kalender_max_pris` | Grænse pr. pakke i kr i stedet for pr. liter (bruges til Kærgården Let: 15 kr) |
+| `ord_hver_for_sig` | Ordene i `skal_indeholde` skal bare stå et sted i teksten hver for sig, fx „Kærgården … Let“ |
+| `ogsaa_uden_variant` | Tæller også med (markeret med gult), hvis kun mærket nævnes, fx „Kærgården“ uden „Let“ |
 
 Øverst i `config.json`: `position` (midtpunkt og radius for søgningen, standard hele Danmark),
 `udeluk_graensehandel` og `udeluk_butikker`.
 
-Literpris passer til drikkevarer. Skal der på et tidspunkt holdes øje med fx kaffe eller vaskepulver,
-skal scriptet lære kilopris; sig til.
+Kærgården Let er sat op sådan her: tilbud, der nævner „Kærgården“ og „Let“, tæller som sikre. Tilbud,
+der kun nævner „Kærgården“, kommer også med, men markeres med gult, og appen skriver øverst, hvis ingen
+aviser nævner Let direkte. Alarm og kalender kun ved højst 15 kr pr. pakke.
 
 Køres lokalt med `python3 tjek_tilbud.py` (kræver kun Python 3.9+).

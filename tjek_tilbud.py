@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Hold øje med tilbud i tilbudsaviserne (eTilbudsavis/Tjek) og sammenlign på literpris og stykpris.
+"""Hold øje med tilbud i tilbudsaviserne (eTilbudsavis/Tjek) og sammenlign på enhedspris.
+
+Drikkevarer sammenlignes på kr pr. liter ("enhed": "l", standard), fx smør på kr pr. kg ("enhed": "kg").
 
 Hvilke varer der holdes øje med, står i config.json under "varer".
 
 Skriver:
-  OVERSIGT.md        – overblik pr. vare, sorteret efter literpris
+  OVERSIGT.md        – overblik pr. vare, sorteret efter enhedspris
   tilbud.ics         – kalender, der kan abonneres på
   data/tilbud.json   – alle relevante tilbud, der er set (historik)
   data/nye.md        – kun når der er nye tilbud under alarmgrænsen (bruges til alarmen,
@@ -38,6 +40,7 @@ PAKKE_RE = re.compile(rf"(\d{{1,2}})\s*[x×]\s*({TAL})\s*(cl|l|liter)\b", re.I)
 STR_RE = re.compile(rf"(?<![\d,.x×])({TAL})(?:\s*-\s*({TAL}))?\s*(cl|l|liter)\b", re.I)
 DAASE_RE = re.compile(r"\b(ds|dåse|dåser)\b", re.I)
 FLASKE_RE = re.compile(r"\b(pet|fl|flaske|flasker|plast)\b", re.I)
+GRAM_RE = re.compile(rf"(?<![\d,.])({TAL})\s*(g|gr|gram|kg)\b\.?", re.I)
 MAX_RE = re.compile(r"ma(?:x|ks)\.?\s*(\d+)\s*(rammer|ramme|pakker|pakke|ks|kasser|stk|flasker)\.?",
                     re.I)
 
@@ -86,11 +89,22 @@ def er_graense(o, config):
     return config["udeluk_graensehandel"] and "DE" in markeder
 
 
+def naevner(lav, udtryk, ord_hver_for_sig=False):
+    """Står udtrykket i teksten? Med ord_hver_for_sig skal hvert ord bare stå et sted som helt ord."""
+    if not ord_hver_for_sig:
+        return udtryk in lav
+    return all(re.search(rf"(?<!\w){re.escape(o)}(?!\w)", lav) for o in udtryk.split())
+
+
 def match_vare(lav, vare):
-    """'ja' hvis varen nævnes direkte, 'måske' ved fx 'Pepsi … flere varianter', ellers None."""
-    if any(o in lav for o in vare["skal_indeholde"]):
+    """'ja' hvis varen nævnes direkte, 'måske' ved fx 'Pepsi … flere varianter' eller kun mærket
+    ('ogsaa_uden_variant'), ellers None."""
+    hver = vare.get("ord_hver_for_sig", False)
+    if any(naevner(lav, o, hver) for o in vare["skal_indeholde"]):
         return "ja"
     if "flere varianter" in lav and any(o in lav for o in vare.get("ogsaa_flere_varianter_af", [])):
+        return "måske"
+    if any(o in lav for o in vare.get("ogsaa_uden_variant", [])):
         return "måske"
     return None
 
@@ -104,6 +118,8 @@ def fortolk(o, vare):
     status = match_vare(lav, vare)
     if not status:
         return None
+    if vare.get("enhed", "l") == "kg":
+        return fortolk_vaegt(o, vare, overskrift, beskrivelse, tekst, lav, status)
     noegler = [n.lower() for n in vare["skal_indeholde"] + vare.get("ogsaa_flere_varianter_af", [])]
 
     # Et tilbud kan dække flere varer ("18x33 cl Heineken … 24x33 cl Pepsi Max").
@@ -166,17 +182,11 @@ def fortolk(o, vare):
         type_ = "?"
 
     noter = [noter_pakning] if noter_pakning else []
-    m = MAX_RE.search(tekst)
-    if m:
-        noter.append(f"max {m.group(1)} {m.group(2).lower()}")
-    if "afhentningspris" in lav:
-        noter.append("afhentningspris")
-    if "medlem" in lav:
-        noter.append("medlemspris")
+    noter += faelles_noter(o, tekst, lav)
     if len(stoerrelser) > 1:
         noter.append("flere størrelser: " + "–".join(f"{s} cl" for s in stoerrelser))
     if status == "måske":
-        noter.append(f"„flere varianter“, {vare['navn']} ikke nævnt")
+        noter.append(usikker_note(lav, vare))
 
     return {
         "id": o["id"],
@@ -195,23 +205,109 @@ def fortolk(o, vare):
     }
 
 
+def faelles_noter(o, tekst, lav):
+    noter = []
+    m = MAX_RE.search(tekst)
+    if m:
+        noter.append(f"max {m.group(1)} {m.group(2).lower()}")
+    elif ((o.get("quantity") or {}).get("pieces") or {}).get("max"):
+        noter.append(f"max {o['quantity']['pieces']['max']} stk")
+    if "afhentningspris" in lav:
+        noter.append("afhentningspris")
+    if "medlem" in lav:
+        noter.append("medlemspris")
+    return noter
+
+
+def usikker_note(lav, vare):
+    if "flere varianter" in lav:
+        return f"„flere varianter“, {vare['navn']} ikke nævnt"
+    return f"{vare['navn']} ikke nævnt"
+
+
+def fortolk_vaegt(o, vare, overskrift, beskrivelse, tekst, lav, status):
+    """Varer, der sælges efter vægt (fx smør): find gram pr. pakning."""
+    q = o.get("quantity") or {}
+    s = q.get("size") or {}
+    si = (q.get("unit") or {}).get("si") or {}
+    gram = []
+    if si.get("symbol") == "kg" and s.get("from"):
+        gram = sorted({round(s["from"] * si["factor"] * 1000), round(s["to"] * si["factor"] * 1000)})
+    if not gram:
+        m = GRAM_RE.search(beskrivelse) or GRAM_RE.search(overskrift)
+        if m:
+            v = float(m.group(1).replace(",", "."))
+            gram = [round(v * 1000) if m.group(2).lower() == "kg" else round(v)]
+    stk = q.get("pieces") or {}
+    antal = int(stk["from"]) if stk.get("from") and stk.get("from") == stk.get("to") else 1
+    noter = faelles_noter(o, tekst, lav)
+    if len(gram) > 1:
+        noter.append("flere størrelser: " + "–".join(f"{g} g" for g in gram))
+    if status == "måske":
+        noter.append(usikker_note(lav, vare))
+    return {
+        "id": o["id"], "vare": vare["navn"],
+        "butik": (o.get("branding") or {}).get("name") or (o.get("dealer") or {}).get("name") or "?",
+        "overskrift": overskrift, "beskrivelse": beskrivelse,
+        "pris": float(o["pricing"]["price"]), "antal": antal, "stoerrelser_g": gram, "type": "?",
+        "status": status,
+        "fra": lokal_dato(o["run_from"]).isoformat(), "til": lokal_dato(o["run_till"]).isoformat(),
+        "noter": noter,
+    }
+
+
 def vurder(t, vare):
     """Vælg størrelse inden for grænserne og regn priser ud. False hvis tilbuddet ikke tæller med."""
+    t["stykpris"] = round(t["pris"] / t["antal"], 2)
+    if vare.get("enhed", "l") == "kg":
+        tilladte = [g for g in t["stoerrelser_g"] if vare.get("min_g", 0) <= g <= vare.get("max_g", 10**6)]
+        if not tilladte:
+            return False
+        g = max(tilladte)
+        t.update(gram=g, maengde=g, enhed="kg",
+                 kilopris=round(t["pris"] / (t["antal"] * g / 1000), 2))
+        t["enhedspris"] = t["kilopris"]
+        return True
     tilladte = [s for s in t["stoerrelser_cl"] if vare["min_cl"] <= s <= vare["max_cl"]]
     if not tilladte:
         return False
     cl = max(tilladte)  # prisen gælder hver størrelse; den største giver bedst literpris
     t["cl"] = cl
-    t["stykpris"] = round(t["pris"] / t["antal"], 2)
     t["literpris"] = round(t["pris"] / (t["antal"] * cl / 100), 2)
+    t.update(maengde=cl, enhed="l", enhedspris=t["literpris"])
     return True
+
+
+def normaliser(t):
+    """Ældre historik kendte kun liter."""
+    if "enhedspris" not in t and "literpris" in t:
+        t.update(maengde=t["cl"], enhed="l", enhedspris=t["literpris"])
+    return t
+
+
+def under_graense(t, vare, felt="alarm"):
+    """Er tilbuddet under varens grænse? felt = 'alarm' eller 'kalender'. None hvis ingen grænse."""
+    pr_pakke = vare.get(f"{felt}_max_pris")
+    pr_enhed = vare.get(f"{felt}_max_literpris") or vare.get(f"{felt}_max_enhedspris")
+    if pr_pakke is not None:
+        return t["stykpris"] <= pr_pakke
+    if pr_enhed is not None:
+        return t["enhedspris"] <= pr_enhed
+    return None
+
+
+def graense_tekst(vare, felt="alarm"):
+    if vare.get(f"{felt}_max_pris") is not None:
+        return f"højst {kr(vare[f'{felt}_max_pris'])} kr pr. pakke"
+    g = vare.get(f"{felt}_max_literpris") or vare.get(f"{felt}_max_enhedspris")
+    return f"højst {kr(g)} kr/{vare.get('enhed', 'l')}" if g is not None else ""
 
 
 # ---------------------------------------------------------------- formattering
 
 def noegle(t):
     """Samme tilbud kan have flere ID'er (fx regionale udgaver af avisen); kend det på indholdet."""
-    return f"{t['vare']}|{t['butik']}|{t['fra']}|{t['til']}|{t['pris']}|{t['antal']}|{t['cl']}"
+    return f"{t['vare']}|{t['butik']}|{t['fra']}|{t['til']}|{t['pris']}|{t['antal']}|{t.get('cl', t.get('gram'))}"
 
 
 def kr(v):
@@ -231,26 +327,31 @@ def liter(cl):
     return f"{cl} cl" if cl < 100 else f"{kr(cl / 100).rstrip('0').rstrip(',')} l"
 
 
+def maengde_tekst(t):
+    return f"{t['gram']} g" if t.get("enhed") == "kg" else liter(t["cl"])
+
+
 def pakning(t):
-    return liter(t["cl"]) if t["antal"] == 1 else f"{t['antal']} × {liter(t['cl'])}"
+    return maengde_tekst(t) if t["antal"] == 1 else f"{t['antal']} × {maengde_tekst(t)}"
 
 
 def tabel(tilbud):
-    linjer = ["| Kr/l | Kr/stk | Butik | Pris | Pakning | Type | Periode | Noter |",
+    e = tilbud[0]["enhed"] if tilbud else "l"
+    linjer = [f"| Kr/{e} | Kr/stk | Butik | Pris | Pakning | Type | Periode | Noter |",
               "|---:|---:|---|---:|---|:-:|---|---|"]
     for t in tilbud:
-        linjer.append(f"| **{kr(t['literpris'])}** | {kr(t['stykpris'])} | {t['butik']} "
+        linjer.append(f"| **{kr(t['enhedspris'])}** | {kr(t['stykpris'])} | {t['butik']} "
                       f"| {kr(t['pris'])} | {pakning(t)} | {t['type']} | {periode(t)} "
                       f"| {', '.join(t['noter'])} |")
     return "\n".join(linjer)
 
 
 def sorter(lst):
-    return sorted(lst, key=lambda t: (t["literpris"], t["fra"]))
+    return sorted(lst, key=lambda t: (t["enhedspris"], t["fra"]))
 
 
 def kort(t):
-    return (f"{kr(t['literpris'])} kr/l ({kr(t['stykpris'])} kr/stk) hos {t['butik']} – "
+    return (f"{kr(t['enhedspris'])} kr/{t['enhed']} ({kr(t['stykpris'])} kr/stk) hos {t['butik']} – "
             f"{pakning(t)} for {kr(t['pris'])} kr, {periode(t)}")
 
 
@@ -258,7 +359,7 @@ def oversigt(config, aktuelle, i_dag, nu):
     idag = i_dag.isoformat()
     ud = ["# Tilbud", "",
           f"Opdateret {nu.strftime('%d/%m/%Y kl. %H:%M')}. Data fra eTilbudsavis. Sorteret efter "
-          "literpris, så forskellige størrelser kan sammenlignes. Priserne er uden pant.", ""]
+          "pris pr. liter eller kg, så forskellige størrelser kan sammenlignes. Priserne er uden pant.", ""]
     for vare in config["varer"]:
         lst = [t for t in aktuelle if t["vare"] == vare["navn"]]
         gaelder = sorter([t for t in lst if t["fra"] <= idag <= t["til"]])
@@ -267,7 +368,8 @@ def oversigt(config, aktuelle, i_dag, nu):
         if gaelder:
             ud += [f"> **Billigst lige nu:** {kort(gaelder[0])}", ""]
 
-        ud += ["### Dag for dag", "", "| Dag | Billigst | Kr/l | Kr/stk | Pakning | Næstbedst |",
+        e = vare.get("enhed", "l")
+        ud += ["### Dag for dag", "", f"| Dag | Billigst | Kr/{e} | Kr/stk | Pakning | Næstbedst |",
                "|---|---|---:|---:|---|---|"]
         for n in range(14):
             d = (i_dag + timedelta(days=n)).isoformat()
@@ -277,8 +379,8 @@ def oversigt(config, aktuelle, i_dag, nu):
                 naest = ""
                 if len(paa_dagen) > 1:
                     b = paa_dagen[1]
-                    naest = f"{b['butik']} {kr(b['literpris'])} kr/l ({pakning(b)})"
-                ud.append(f"| {kort_dato(d)} | {a['butik']} | **{kr(a['literpris'])}** "
+                    naest = f"{b['butik']} {kr(b['enhedspris'])} kr/{e} ({pakning(b)})"
+                ud.append(f"| {kort_dato(d)} | {a['butik']} | **{kr(a['enhedspris'])}** "
                           f"| {kr(a['stykpris'])} | {pakning(a)} | {naest} |")
             else:
                 ud.append(f"| {kort_dato(d)} | – | | | | |")
@@ -287,7 +389,7 @@ def oversigt(config, aktuelle, i_dag, nu):
 
     ud += ["---", "",
            "Type: „?“ betyder, at avisen ikke skriver dåse eller flaske. Grænsebutikker er ikke med. "
-           "Kalenderen `tilbud.ics` og alarmen er beskrevet i `LÆS MIG.md`.", ""]
+           "Kalenderen `tilbud.ics` og alarmen er beskrevet i `README.md`.", ""]
     return "\n".join(ud)
 
 
@@ -296,19 +398,22 @@ def ics_tekst(s):
 
 
 def kalender(config, tilbud, nu):
-    graenser = {v["navn"]: v.get("kalender_max_literpris") for v in config["varer"]}
+    varer = {v["navn"]: v for v in config["varer"]}
     emoji = {v["navn"]: v.get("emoji", "") for v in config["varer"]}
     stempel = nu.astimezone(ZoneInfo("UTC")).strftime("%Y%m%dT%H%M%SZ")
     ud = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//tilbudsjaeger//DA", "CALSCALE:GREGORIAN",
           "METHOD:PUBLISH", "X-WR-CALNAME:Tilbud", "X-WR-TIMEZONE:Europe/Copenhagen",
           "REFRESH-INTERVAL;VALUE=DURATION:PT6H", "X-PUBLISHED-TTL:PT6H"]
     for t in sorted(tilbud, key=lambda t: t["fra"]):
-        g = graenser.get(t["vare"])
-        if g is not None and t["literpris"] > g:
+        if t["vare"] not in varer or under_graense(t, varer[t["vare"]], "kalender") is False:
             continue
         slut = date.fromisoformat(t["til"]) + timedelta(days=1)
-        titel = (f"{emoji.get(t['vare'], '')} {t['vare']} {kr(t['literpris'])} kr/l · "
-                 f"{kr(t['stykpris'])} kr/stk – {t['butik']}").strip()
+        if t["enhed"] == "kg":
+            titel = f"{emoji.get(t['vare'], '')} {t['vare']} {kr(t['stykpris'])} kr ({pakning(t)}) – {t['butik']}"
+        else:
+            titel = (f"{emoji.get(t['vare'], '')} {t['vare']} {kr(t['enhedspris'])} kr/l · "
+                     f"{kr(t['stykpris'])} kr/stk – {t['butik']}")
+        titel = titel.strip()
         beskr = f"{pakning(t)} for {kr(t['pris'])} kr (type: {t['type']}).\n" \
                 f"{t['overskrift']}: {t['beskrivelse']}"
         if t["noter"]:
@@ -339,15 +444,20 @@ def data_til_app(config, aktuelle, i_dag, nu):
     for vare in config["varer"]:
         lst = sorter([t for t in aktuelle if t["vare"] == vare["navn"]])
         tilbud = [{
-            "butik": t["butik"], "pris": t["pris"], "antal": t["antal"], "cl": t["cl"],
-            "pakning": pakning(t), "type": t["type"], "literpris": t["literpris"],
+            "butik": t["butik"], "pris": t["pris"], "antal": t["antal"],
+            **({"cl": t["cl"], "literpris": t["literpris"]} if t["enhed"] == "l"
+               else {"gram": t["gram"], "kilopris": t["kilopris"]}),
+            "maengde": t["maengde"], "enhed": t["enhed"], "enhedspris": t["enhedspris"],
+            "pakning": pakning(t), "type": t["type"],
             "stykpris": t["stykpris"], "fra": t["fra"], "til": t["til"], "noter": t["noter"],
             "beskrivelse": f"{t['overskrift']}: {t['beskrivelse']}",
             "gaelder_nu": t["fra"] <= idag <= t["til"], "foerst_set": t.get("foerst_set"),
         } for t in lst]
         nu_ = [t for t in tilbud if t["gaelder_nu"]]
         varer.append({"navn": vare["navn"], "emoji": vare.get("emoji", ""),
+                      "enhed": vare.get("enhed", "l"),
                       "alarm_max_literpris": vare.get("alarm_max_literpris"),
+                      "alarm_max_pris": vare.get("alarm_max_pris"),
                       "normal_literpris": vare.get("normal_literpris"),
                       "billigst_nu": nu_[0] if nu_ else None,
                       "antal_nu": len(nu_), "tilbud": tilbud})
@@ -364,7 +474,7 @@ def main():
 
     historik_fil = DATA / "tilbud.json"
     historik = json.loads(historik_fil.read_text(encoding="utf-8")) if historik_fil.exists() else {}
-    historik = {noegle(t): t for t in historik.values()}  # ældre filer brugte ID som nøgle
+    historik = {noegle(t): normaliser(t) for t in historik.values()}  # ældre filer brugte ID som nøgle
 
     if len(sys.argv) > 1:  # test med gemte API-svar: tjek_tilbud.py fil1.json fil2.json
         raa = list({o["id"]: o for f in sys.argv[1:]
@@ -382,10 +492,10 @@ def main():
                 relevante.append(t)
                 break
 
-    alarm = {v["navn"]: v.get("alarm_max_literpris") for v in config["varer"]}
+    varer = {v["navn"]: v for v in config["varer"]}
     nye = [t for t in relevante
            if noegle(t) not in historik and t["til"] >= idag
-           and alarm.get(t["vare"]) is not None and t["literpris"] <= alarm[t["vare"]]]
+           and under_graense(t, varer[t["vare"]]) is True]
 
     for t in relevante:
         n = noegle(t)
@@ -414,13 +524,13 @@ def main():
         for vare in config["varer"]:
             mine = [t for t in nye if t["vare"] == vare["navn"]]
             if mine:
-                dele += [f"**{vare['navn']}** – nye tilbud til højst "
-                         f"{kr(alarm[vare['navn']])} kr/l:", "", tabel(mine), ""]
+                dele += [f"**{vare['navn']}** – nye tilbud til {graense_tekst(vare)}:", "",
+                         tabel(mine), ""]
         dele.append("Se hele overblikket i `OVERSIGT.md`.")
         nye_fil.write_text("\n".join(dele) + "\n", encoding="utf-8")
         b = nye[0]
         titel_fil.write_text(
-            f"{b['vare']}: {kr(b['literpris'])} kr/l ({kr(b['stykpris'])} kr/stk, {pakning(b)}) "
+            f"{b['vare']}: {kr(b['enhedspris'])} kr/{b['enhed']} ({kr(b['stykpris'])} kr/stk, {pakning(b)}) "
             f"hos {b['butik']}, {periode(b)}"
             + (f" + {len(nye) - 1} andre nye" if len(nye) > 1 else ""), encoding="utf-8")
     else:
@@ -429,8 +539,8 @@ def main():
                 f.unlink()
 
     print(f"{len(raa)} tilbud hentet, {len(relevante)} relevante, {len(nye)} nye under alarmgrænsen.")
-    for t in sorter(aktuelle)[:15]:
-        print(f"  {t['vare']:<10} {kr(t['literpris']):>6} kr/l {kr(t['stykpris']):>6} kr/stk  "
+    for t in sorted(aktuelle, key=lambda t: (t["vare"], t["enhedspris"]))[:30]:
+        print(f"  {t['vare']:<14} {kr(t['enhedspris']):>6} kr/{t['enhed']:<2} {kr(t['stykpris']):>6} kr/stk  "
               f"{t['butik']:<14} {pakning(t):<12} {t['type']:<6} {periode(t)}")
 
 

@@ -1,5 +1,9 @@
 {
-  "position": { "lat": 56.0, "lng": 10.5, "radius_meter": 700000 },
+  "position": {
+    "lat": 56.0,
+    "lng": 10.5,
+    "radius_meter": 700000
+  },
   "udeluk_graensehandel": true,
   "udeluk_butikker": [
     "BorderShop",
@@ -17,14 +21,40 @@
     {
       "navn": "Pepsi Max",
       "emoji": "🥤",
-      "soegeord": ["pepsi max", "pepsi"],
-      "skal_indeholde": ["pepsi max"],
-      "ogsaa_flere_varianter_af": ["pepsi"],
+      "soegeord": [
+        "pepsi max",
+        "pepsi"
+      ],
+      "skal_indeholde": [
+        "pepsi max"
+      ],
+      "ogsaa_flere_varianter_af": [
+        "pepsi"
+      ],
       "min_cl": 20,
       "max_cl": 100,
       "alarm_max_literpris": 12.0,
       "kalender_max_literpris": 15.0,
       "normal_literpris": 14.9
+    },
+    {
+      "navn": "Kærgården Let",
+      "emoji": "🧈",
+      "enhed": "kg",
+      "soegeord": [
+        "kærgården"
+      ],
+      "skal_indeholde": [
+        "kærgården let"
+      ],
+      "ord_hver_for_sig": true,
+      "ogsaa_uden_variant": [
+        "kærgården"
+      ],
+      "min_g": 100,
+      "max_g": 1000,
+      "alarm_max_pris": 15.0,
+      "kalender_max_pris": 15.0
     }
   ]
 }

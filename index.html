@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tilbud</title>
-<meta name="description" content="Tilbud fra tilbudsaviserne sammenlignet på literpris">
+<meta name="description" content="Tilbud fra tilbudsaviserne sammenlignet pr. liter og kg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Tilbud">
@@ -59,6 +59,15 @@
   .sektion { margin-top: 32px; }
   .sektion > h2 { font-size: 13px; font-weight: 650; color: var(--t3); text-transform: uppercase;
                   letter-spacing: .06em; margin: 0 4px 8px; }
+
+  /* Faneblade mellem varer, 44 px høje */
+  .faner { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; background: var(--linje);
+           border-radius: 12px; padding: 4px; margin: 0 0 24px; }
+  .faner button { min-height: 36px; border: 0; background: none; color: var(--t2); font: inherit; font-size: 13px;
+                  font-weight: 650; border-radius: 8px; cursor: pointer; white-space: nowrap; }
+  .faner button[aria-pressed="true"] { background: var(--kort); color: var(--tekst); box-shadow: var(--skygge); }
+  .advarsel { padding: 16px 24px; margin-bottom: 12px; background: var(--rav-bg); color: var(--rav); box-shadow: none; }
+  .advarsel b { font-weight: 650; }
 
   /* Svaret: hvor er det billigst lige nu? */
   .helt { padding: 24px; position: relative; overflow: hidden; }
@@ -177,7 +186,7 @@
 <main>
   <header>
     <div class="app">Tilbud</div>
-    <h1 id="titel">Pepsi Max</h1>
+    <h1 id="titel">&nbsp;</h1>
     <div class="opd" id="opdateret">&nbsp;</div>
   </header>
   <div id="indhold" aria-busy="true">
@@ -185,7 +194,7 @@
     <div class="skelet" style="height:72px"></div>
   </div>
   <footer>
-    Data fra eTilbudsavis, hentet to gange i døgnet. Alle priser er sammenlignet pr. liter og er uden pant.
+    Data fra eTilbudsavis, hentet to gange i døgnet. Priser er sammenlignet pr. liter eller kg og er uden pant.
     <a href="tilbud.ics">Abonnér på kalenderen</a>
   </footer>
 </main>
@@ -197,9 +206,10 @@
   const kr = v => v.toLocaleString("da-DK", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
-  // Alt sammenlignes på literpris, så pakker i forskellige størrelser kan stå side om side.
-  const maal = "literpris";
-  let visAlle = false;
+  // Sorteres på kr/l eller kr/kg, så pakker i forskellige størrelser kan stå side om side.
+  const maal = "enhedspris";
+  let visAlle = false, V = null, valgtVare = null;   // V = den vare, der vises
+  try { valgtVare = localStorage.getItem("tilbud-vare"); } catch (e) {}
 
   const iDag = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Copenhagen" }).format(new Date());
   const dato = iso => { const [y, m, d] = iso.split("-").map(Number); return new Date(Date.UTC(y, m - 1, d)); };
@@ -214,7 +224,14 @@
     return kort(iso);
   };
   const periode = t => `${kort(t.fra)} – ${kort(t.til)}`;
-  const enhed = () => "kr/l";
+  const erKg = () => V && V.enhed === "kg";
+  const enhed = () => erKg() ? "kr/kg" : "kr/l";
+  // Hovedtallet: kr/l for drikkevarer, pris pr. pakke for vægtvarer (smør tænker man i pakker)
+  const hoved = t => erKg() ? t.stykpris : t.enhedspris;
+  const hovedEnhed = () => erKg() ? "kr" : "kr/l";
+  const underGraense = t => V.alarm_max_pris != null ? t.stykpris <= V.alarm_max_pris + 1e-9
+    : V.alarm_max_literpris != null ? t.enhedspris <= V.alarm_max_literpris + 1e-9 : null;
+  const graenseTekst = () => V.alarm_max_pris != null ? `${kr(V.alarm_max_pris)} kr` : `${kr(V.alarm_max_literpris)} kr/l`;
   const sorter = lst => [...lst].sort((a, b) => a[maal] - b[maal] || a.fra.localeCompare(b.fra));
   const id = t => t.butik + t.fra + t.pris;
   const initialer = n => n.replace(/[^\p{L}\p{N} ]/gu, "").split(/\s+/).filter(Boolean)
@@ -225,19 +242,21 @@
     if (!t) return `<div class="kort tom ind">Ingen tilbud på ${esc(vare.navn)} lige nu.<br>
       <span class="lille t3">Appen holder øje og viser dem her, så snart de dukker op.</span></div>`;
     const chips = [];
-    if (vare.normal_literpris) {
+    if (vare.normal_literpris && t.literpris) {
       const spar = Math.round((1 - t.literpris / vare.normal_literpris) * 100);
       if (spar > 0) chips.push(`<span class="chip">${spar} % under normalpris</span>`);
     }
-    if (vare.alarm_max_literpris && t.literpris <= vare.alarm_max_literpris) chips.push(`<span class="chip">Under din grænse</span>`);
+    const ok = underGraense(t);
+    if (ok === true) chips.push(`<span class="chip">Under din grænse</span>`);
+    if (ok === false) chips.push(`<span class="chip rav">Over din grænse på ${graenseTekst()}</span>`);
     if (usikker(t)) chips.push(`<span class="chip rav">Avisen nævner ikke ${esc(vare.navn)}</span>`);
     const laengde = dageTil(t.til) - dageTil(t.fra) + 1, gaaet = -dageTil(t.fra) + 1;
     const restTekst = dageTil(t.til) === 0 ? "Slutter i dag" : `Gælder til og med ${relDag(t.til)}`;
     return `<div class="kort helt ind">
       <div class="lbl">Billigst lige nu</div>
       <div class="butik">${esc(t.butik)}</div>
-      <div class="pris tal">${kr(t[maal])} <span>${enhed()}</span></div>
-      <div class="detalje">${esc(t.pakning)} for ${kr(t.pris)} kr</div>
+      <div class="pris tal">${kr(hoved(t))} <span>${hovedEnhed()}</span></div>
+      <div class="detalje">${erKg() ? `${esc(t.pakning)} · ${kr(t.enhedspris)} kr/kg` : `${esc(t.pakning)} for ${kr(t.pris)} kr`}</div>
       ${chips.length ? `<div class="chips">${chips.join("")}</div>` : ""}
       <div class="slut lille t3">${restTekst}
         <div class="spor"><i style="width:${Math.min(100, Math.max(6, gaaet / laengde * 100))}%"></i></div></div>
@@ -245,15 +264,18 @@
   }
 
   function raad(nu, kommende) {
-    const snart = sorter(kommende.filter(t => dageTil(t.fra) <= 7))[0];
-    if (snart && (!nu || snart[maal] < nu[maal] - 0.005)) {
-      const forskel = nu ? ` – ${kr(nu[maal] - snart[maal])} ${enhed()} billigere` : "";
+    const snart = sorter(kommende.filter(t => dageTil(t.fra) <= 7 && underGraense(t) !== false))[0];
+    const nuOk = nu && underGraense(nu) !== false;
+    if (snart && (!nuOk || snart[maal] < nu[maal] - 0.005)) {
+      const forskel = nuOk ? ` – ${kr(hoved(nu) - hoved(snart))} ${hovedEnhed()} billigere` : "";
       return `<div class="kort raad vent ind f2"><div class="ikon">⏳</div><div>
         <p><b>Vent til ${relDag(snart.fra)}</b>${forskel}</p>
-        <p>${esc(snart.butik)}: ${kr(snart[maal])} ${enhed()} · ${esc(snart.pakning)} for ${kr(snart.pris)} kr · ${periode(snart)}</p></div></div>`;
+        <p>${esc(snart.butik)}: ${kr(hoved(snart))} ${hovedEnhed()} · ${esc(snart.pakning)}${erKg() ? "" : ` for ${kr(snart.pris)} kr`} · ${periode(snart)}</p></div></div>`;
     }
-    if (nu) return `<div class="kort raad ind f2"><div class="ikon">✅</div><div>
+    if (nuOk) return `<div class="kort raad ind f2"><div class="ikon">✅</div><div>
       <p><b>Slå til nu</b></p><p>Der er ikke noget billigere på vej i de aviser, der er ude.</p></div></div>`;
+    if (nu) return `<div class="kort raad vent ind f2"><div class="ikon">✋</div><div>
+      <p><b>Spring over</b></p><p>Intet tilbud under din grænse på ${graenseTekst()} lige nu eller den næste uge.</p></div></div>`;
     return "";
   }
 
@@ -278,8 +300,8 @@
       let bedst = false;
       for (let i = start; i <= stop; i++) if (bedstPrDag[plus(iDag, i)] === t[maal]) bedst = true;
       const kl = ["bar", bedst ? "bedst" : "", t.fra < iDag ? "fortsat-v" : "", t.til > slut ? "fortsat-h" : ""].join(" ");
-      const titel = `${t.butik}: ${kr(t[maal])} ${enhed()}, ${t.pakning} for ${kr(t.pris)} kr, ${periode(t)}`;
-      html += `<div class="tl-navn${bedst ? " bedst" : ""}" style="grid-row:${r + 2};grid-column:1"><b class="tal">${kr(t[maal])}</b> ${esc(t.butik)}</div>`;
+      const titel = `${t.butik}: ${kr(hoved(t))} ${hovedEnhed()}, ${t.pakning}, ${periode(t)}`;
+      html += `<div class="tl-navn${bedst ? " bedst" : ""}" style="grid-row:${r + 2};grid-column:1"><b class="tal">${kr(hoved(t))}</b> ${esc(t.butik)}</div>`;
       html += `<button class="${kl}" style="grid-row:${r + 2};grid-column:${start + 2} / ${stop + 3}" aria-label="${esc(titel)}" data-id="${esc(id(t))}"></button>`;
     });
     const flere = alle.length > FOERST_VIST
@@ -295,12 +317,13 @@
       const chips = [];
       if (t.type !== "?") chips.push(`<span class="chip neutral">${esc(t.type)}</span>`);
       for (const n of t.noter) chips.push(`<span class="chip ${n.includes("ikke nævnt") ? "rav" : "neutral"}">${esc(n)}</span>`);
+      if (underGraense(t) === false) chips.push(`<span class="chip rav">over ${graenseTekst()}</span>`);
       const naar = t.fra > iDag ? `fra ${relDag(t.fra)}` : `til og med ${relDag(t.til)}`;
       return `<li id="t-${esc(id(t))}" class="${id(t) === bedstId ? "fremhaevet" : ""}" title="${esc(t.beskrivelse)}">
         <div class="logo" aria-hidden="true">${esc(initialer(t.butik))}</div>
         <div><div class="navn">${esc(t.butik)}</div>
-          <div class="info">${esc(t.pakning)} for ${kr(t.pris)} kr · ${naar}</div></div>
-        <div class="pris tal">${kr(t[maal])}<span>${enhed()}</span></div>
+          <div class="info">${esc(t.pakning)}${erKg() ? ` · ${kr(t.enhedspris)} kr/kg` : ` for ${kr(t.pris)} kr`} · ${naar}</div></div>
+        <div class="pris tal">${kr(hoved(t))}<span>${hovedEnhed()}</span></div>
         ${chips.length ? `<div class="chips">${chips.join("")}</div>` : ""}
       </li>`;
     }).join("");
@@ -309,8 +332,9 @@
 
 
   // ---- Beregner
-  const PANT = cl => cl >= 100 ? 3 : 1;   // Dansk Retursystem: dåser og flasker under 1 l = 1 kr, plast 1 l og op = 3 kr
-  const enhedsord = t => t.antal >= 18 ? ["ramme", "rammer"] : t.antal > 1 ? ["pakke", "pakker"] : ["stk", "stk"];
+  const PANT = t => t.enhed === "kg" ? 0 : t.cl >= 100 ? 3 : 1;   // Dansk Retursystem: dåser og flasker under 1 l = 1 kr, plast 1 l og op = 3 kr
+  const enhedsord = t => t.enhed === "kg" ? ["pakke", "pakker"]
+    : t.antal >= 18 ? ["ramme", "rammer"] : t.antal > 1 ? ["pakke", "pakker"] : ["stk", "stk"];
   const maksAntal = t => { for (const n of t.noter) { const m = n.match(/max\.?\s*(\d+)/i); if (m) return +m[1]; } return null; };
   let beregnAntal = 3, beregnValg = {};
   try { beregnAntal = +localStorage.getItem("tilbud-antal") || beregnAntal; } catch (e) {}
@@ -320,11 +344,12 @@
     const [et, flere] = enhedsord(t);
     const n = beregnAntal, maks = maksAntal(t);
     const tilbudsAntal = maks ? Math.min(n, maks) : n, ekstra = n - tilbudsAntal;
-    const liter = t.antal * t.cl / 100;
-    const normalPrPak = vare.normal_literpris ? vare.normal_literpris * liter : null;
+    const kg = t.enhed === "kg";
+    const maengde = kg ? t.antal * t.gram / 1000 : t.antal * t.cl / 100;   // kg eller liter pr. pakke
+    const normalPrPak = kg ? (vare.normal_pris || null) : vare.normal_literpris ? vare.normal_literpris * maengde : null;
     const varer = tilbudsAntal * t.pris + (ekstra && normalPrPak ? ekstra * normalPrPak : 0);
-    const stk = n * t.antal, pant = stk * PANT(t.cl), iAlt = varer + pant;
-    const valg = valgmuligheder.map(x => `<option value="${esc(id(x))}"${x === t ? " selected" : ""}>${esc(x.butik)} · ${kr(x.literpris)} kr/l · ${esc(x.pakning)}${x.fra > iDag ? ` · fra ${relDag(x.fra)}` : ""}</option>`).join("");
+    const stk = n * t.antal, pant = stk * PANT(t), iAlt = varer + pant;
+    const valg = valgmuligheder.map(x => `<option value="${esc(id(x))}"${x === t ? " selected" : ""}>${esc(x.butik)} · ${kr(hoved(x))} ${hovedEnhed()} · ${esc(x.pakning)}${x.fra > iDag ? ` · fra ${relDag(x.fra)}` : ""}</option>`).join("");
     let noter = "";
     if (ekstra) noter += `<p class="note rav">${esc(t.butik)} sælger max ${maks} ${maks === 1 ? et : flere} pr. kunde. De sidste ${ekstra} er regnet til normalpris${normalPrPak ? `, ca. ${kr(normalPrPak)} kr pr. ${et}` : " (ukendt, ikke med i summen)"}.</p>`;
     if (normalPrPak) {
@@ -335,13 +360,13 @@
       <select data-beregn-valg data-vare="${esc(vare.navn)}" aria-label="Tilbud">${valg}</select>
       <div class="stepper">
         <button data-antal="-1" aria-label="Færre" ${n <= 1 ? "disabled" : ""}>−</button>
-        <output aria-live="polite">${n} ${n === 1 ? et : flere}<span>${stk} × ${t.cl} cl · ${kr(n * liter)} l</span></output>
+        <output aria-live="polite">${n} ${n === 1 ? et : flere}<span>${kg ? `${stk} × ${t.gram} g · ${kr(n * maengde)} kg` : `${stk} × ${t.cl} cl · ${kr(n * maengde)} l`}</span></output>
         <button data-antal="1" aria-label="Flere" ${n >= 50 ? "disabled" : ""}>+</button>
       </div>
       <dl class="regning tal">
         <dt>${tilbudsAntal} × ${kr(t.pris)} kr${ekstra ? ` + ${ekstra} til normalpris` : ""}</dt><dd>${kr(varer)} kr</dd>
-        <dt>Pant ${stk} × ${kr(PANT(t.cl))} kr</dt><dd>${kr(pant)} kr</dd>
-        <dt class="i-alt">I alt inkl. pant</dt><dd>${kr(iAlt)} kr</dd>
+        ${pant ? `<dt>Pant ${stk} × ${kr(PANT(t))} kr</dt><dd>${kr(pant)} kr</dd>` : ""}
+        <dt class="i-alt">I alt${pant ? " inkl. pant" : ""}</dt><dd>${kr(iAlt)} kr</dd>
       </dl>${noter}`;
   }
 
@@ -365,17 +390,18 @@
     const dagTxt = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Copenhagen" }).format(opd);
     const kl = opd.toLocaleTimeString("da-DK", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Copenhagen" });
     document.getElementById("opdateret").textContent = `Opdateret ${relDag(dagTxt)} kl. ${kl}`;
-    const flereVarer = data.varer.length > 1;
-    document.getElementById("titel").textContent = flereVarer ? "Tilbud" : `${data.varer[0].emoji} ${data.varer[0].navn}`;
-    document.querySelector("header .app").hidden = flereVarer;
+    V = data.varer.find(v => v.navn === valgtVare) || data.varer[0];
+    document.getElementById("titel").textContent = `${V.emoji} ${V.navn}`;
 
-    let html = "";
-    for (const vare of data.varer) {
+    let html = data.varer.length > 1 ? `<div class="faner" role="group" aria-label="Vare">${data.varer.map(v =>
+      `<button data-vare="${esc(v.navn)}" aria-pressed="${v === V}">${esc(v.emoji)} ${esc(v.navn)}</button>`).join("")}</div>` : "";
+    for (const vare of [V]) {
       const aktuelle = vare.tilbud.filter(t => t.til >= iDag);
       const gaelder = aktuelle.filter(t => t.fra <= iDag);
       const kommende = aktuelle.filter(t => t.fra > iDag);
       const bedst = sorter(gaelder)[0];
-      if (flereVarer) html += `<h2 style="font-size:20px;font-weight:650;margin:32px 4px 12px">${esc(vare.emoji)} ${esc(vare.navn)}</h2>`;
+      if (aktuelle.length && aktuelle.every(usikker)) html += `<div class="kort advarsel ind"><b>Ingen aviser nævner ${esc(vare.navn)} direkte.</b>
+        Tilbuddene herunder nævner kun mærket, så tjek i butikken, om ${esc(vare.navn)} er med.</div>`;
       html += helt(vare, bedst) + raad(bedst, kommende) + beregner(vare, gaelder, kommende) + tidslinje(aktuelle);
       html += liste(gaelder, "Gælder i dag", bedst && id(bedst));
       html += liste(kommende, "Kommende");
@@ -390,6 +416,12 @@
       beregnAntal = Math.min(50, Math.max(1, beregnAntal + +trin.dataset.antal));
       try { localStorage.setItem("tilbud-antal", beregnAntal); } catch (e) {}
       opdaterBeregnere(); return;
+    }
+    const fane = e.target.closest("[data-vare]");
+    if (fane) {
+      valgtVare = fane.dataset.vare; visAlle = false;
+      try { localStorage.setItem("tilbud-vare", valgtVare); } catch (e) {}
+      tegn(); window.scrollTo({ top: 0 }); return;
     }
     if (e.target.closest("[data-flere]")) { visAlle = !visAlle; tegn(); return; }
     if (e.target.closest("[data-hent]")) { hent(); return; }
@@ -411,7 +443,13 @@
   function hent() {
     fetch("aktuelle.json", { cache: "no-store" })
       .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(d => { data = d; tegn(); })
+      .then(d => {
+        for (const v of d.varer) {
+          v.enhed = v.enhed || "l";
+          for (const t of v.tilbud) { t.enhed = t.enhed || "l"; if (t.enhedspris == null) t.enhedspris = t.literpris; }
+        }
+        data = d; tegn();
+      })
       .catch(() => {
         document.getElementById("indhold").innerHTML = `<div class="kort fejl">Kunne ikke hente tilbuddene.<br>
           <span class="lille t3">Tjek forbindelsen og prøv igen.</span><br><button data-hent>Prøv igen</button></div>`;
