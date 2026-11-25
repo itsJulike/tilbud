@@ -4,11 +4,11 @@
 Hvilke varer der holdes øje med, står i config.json under "varer".
 
 Skriver:
-  tilbud/OVERSIGT.md        – overblik pr. vare, sorteret efter literpris
-  tilbud/tilbud.ics         – kalender, der kan abonneres på
-  tilbud/data/tilbud.json   – alle relevante tilbud, der er set (historik)
-  tilbud/data/nye.md        – kun når der er nye tilbud under alarmgrænsen (bruges til alarmen,
-  tilbud/data/nye_titel.txt   og committes ikke)
+  OVERSIGT.md        – overblik pr. vare, sorteret efter literpris
+  tilbud.ics         – kalender, der kan abonneres på
+  data/tilbud.json   – alle relevante tilbud, der er set (historik)
+  data/nye.md        – kun når der er nye tilbud under alarmgrænsen (bruges til alarmen,
+  data/nye_titel.txt   og committes ikke)
 
 Kun standardbiblioteket bruges, så scriptet kan køre direkte i GitHub Actions.
 """
@@ -415,7 +415,7 @@ def main():
             if mine:
                 dele += [f"**{vare['navn']}** – nye tilbud til højst "
                          f"{kr(alarm[vare['navn']])} kr/l:", "", tabel(mine), ""]
-        dele.append("Se hele overblikket i `tilbud/OVERSIGT.md`.")
+        dele.append("Se hele overblikket i `OVERSIGT.md`.")
         nye_fil.write_text("\n".join(dele) + "\n", encoding="utf-8")
         b = nye[0]
         titel_fil.write_text(

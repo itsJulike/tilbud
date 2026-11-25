@@ -1,0 +1,74 @@
+name: Tilbud
+
+on:
+  schedule:
+    # To gange i døgnet (UTC). Nye aviser kommer typisk ud dagene før de gælder.
+    - cron: "17 5 * * *"
+    - cron: "17 15 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: tilbud
+  cancel-in-progress: false
+
+jobs:
+  tjek:
+    runs-on: ubuntu-latest
+    env:
+      NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Hent tilbud
+        run: python tjek_tilbud.py
+
+      - name: Gem oversigt og kalender
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add OVERSIGT.md tilbud.ics aktuelle.json data/tilbud.json
+          if git diff --cached --quiet; then
+            echo "Ingen ændringer."
+            exit 0
+          fi
+          git commit -m "Tilbud opdateret"
+          for i in 1 2 3; do
+            git pull --rebase && git push && break
+            sleep 5
+          done
+
+      - name: Alarm – nyt GitHub-issue
+        if: hashFiles('data/nye.md') != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            cat data/nye.md
+            echo
+            echo "@${{ github.repository_owner }}"
+          } > /tmp/issue.md
+          gh issue create --title "$(cat data/nye_titel.txt)" --body-file /tmp/issue.md
+
+      - name: Alarm – push til telefonen (ntfy, valgfri)
+        if: hashFiles('data/nye.md') != '' && env.NTFY_TOPIC != ''
+        run: |
+          python - <<'PY' > /tmp/ntfy.json
+          import json, os
+          print(json.dumps({
+              "topic": os.environ["NTFY_TOPIC"],
+              "title": open("data/nye_titel.txt", encoding="utf-8").read(),
+              "message": open("data/nye.md", encoding="utf-8").read(),
+              "markdown": True,
+              "tags": ["shopping_cart"],
+              "click": "https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/OVERSIGT.md",
+          }))
+          PY
+          curl -s -H "Content-Type: application/json" --data-binary @/tmp/ntfy.json https://ntfy.sh/

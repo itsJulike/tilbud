@@ -18,19 +18,19 @@ også starte det i hånden under *Actions → Tilbud → Run workflow*.
 
 ## Webappen
 
-Når GitHub Pages er slået til (se nedenfor), ligger appen på
+Appen ligger på
 
 ```
-https://itsjulike.github.io/opskrifter/tilbud/
+https://tilbud.markusvej.dk/
 ```
 
 Den viser, hvad der er billigst i dag, en tidslinje over de næste 14 dage og alle tilbud. Du kan skifte
 mellem kr pr. liter og kr pr. stk. På telefonen kan siden lægges på hjemmeskærmen (iPhone: Del →
 Føj til hjemmeskærm; Android: menu → Føj til startskærm), så den åbner som en app.
 
-**Slå GitHub Pages til (én gang):** repoets *Settings → Pages → Build and deployment*, vælg
-*Deploy from a branch*, branch `main` og mappe `/ (root)`, og tryk *Save*. Efter et par minutter
-virker adressen ovenfor.
+**Opsætning (er gjort):** GitHub Pages er slået til under repoets *Settings → Pages* (branch `main`,
+mappe `/ (root)`) med det egne domæne `tilbud.markusvej.dk` (filen `CNAME`). Hos Simply.com peger en
+CNAME-post `tilbud` på `itsjulike.github.io`.
 
 ## Home Assistant
 
@@ -43,7 +43,7 @@ ovenfor.
 
 ```yaml
 rest:
-  - resource: https://raw.githubusercontent.com/itsJulike/opskrifter/main/tilbud/aktuelle.json
+  - resource: https://tilbud.markusvej.dk/aktuelle.json
     scan_interval: 3600
     sensor:
       - name: "Pepsi Max billigst"
@@ -80,7 +80,7 @@ content: |
 Google Kalender på computeren: *Andre kalendere → + → Fra webadresse*, og indsæt
 
 ```
-https://raw.githubusercontent.com/itsJulike/opskrifter/main/tilbud/tilbud.ics
+https://tilbud.markusvej.dk/tilbud.ics
 ```
 
 På iPhone: *Indstillinger → Kalender → Konti → Tilføj konto → Andet → Tilføj abonnerede kalender*.
@@ -138,4 +138,4 @@ Tilføj en blok under `"varer"` i `config.json`, fx:
 Literpris passer til drikkevarer. Skal der på et tidspunkt holdes øje med fx kaffe eller vaskepulver,
 skal scriptet lære kilopris; sig til.
 
-Køres lokalt med `python3 tilbud/tjek_tilbud.py` (kræver kun Python 3.9+).
+Køres lokalt med `python3 tjek_tilbud.py` (kræver kun Python 3.9+).
