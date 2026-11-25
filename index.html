@@ -127,6 +127,30 @@
   .liste .chips { grid-column: 2 / -1; margin-top: 8px; gap: 4px; }
   .liste .chip { font-size: 13px; font-weight: 400; padding: 0 8px; }
 
+
+  /* Beregner: hvad koster x rammer inkl. pant? */
+  .beregner { padding: 24px; margin-top: 12px; }
+  .beregner h3 { font-size: 20px; font-weight: 650; margin: 0 0 16px; }
+  .beregner select { width: 100%; min-height: 44px; padding: 0 12px; border: 0; border-radius: 12px;
+                     background: var(--linje); color: var(--tekst); font: inherit; appearance: none;
+                     -webkit-appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--t3) 50%),
+                     linear-gradient(135deg, var(--t3) 50%, transparent 50%);
+                     background-position: right 20px center, right 14px center; background-size: 6px 6px; background-repeat: no-repeat; }
+  .stepper { display: grid; grid-template-columns: 56px 1fr 56px; align-items: center; margin-top: 16px;
+             background: var(--accent-5); border-radius: 16px; padding: 4px; }
+  .stepper button { height: 48px; border: 0; border-radius: 12px; background: var(--kort); color: var(--accent);
+                    font: inherit; font-size: 20px; font-weight: 650; cursor: pointer; box-shadow: var(--skygge); }
+  .stepper button:disabled { opacity: .4; box-shadow: none; }
+  .stepper output { text-align: center; font-weight: 650; }
+  .stepper output span { display: block; font-size: 13px; font-weight: 400; color: var(--t2); }
+  .regning { margin: 16px 0 0; display: grid; grid-template-columns: 1fr auto; gap: 8px 0; font-size: 13px; color: var(--t2); }
+  .regning dd { margin: 0; padding-left: 16px; text-align: right; }
+  .regning .i-alt { font-size: 16px; color: var(--tekst); font-weight: 650; padding-top: 12px; border-top: 1px solid var(--linje); }
+  .regning .i-alt + dd { font-size: 34px; line-height: 1.1; color: var(--tekst); font-weight: 650; padding-top: 12px;
+                         border-top: 1px solid var(--linje); letter-spacing: -.02em; }
+  .beregner .note { margin: 12px 0 0; font-size: 13px; }
+  .beregner .note.rav { color: var(--rav); }
+  .beregner .note.spar { color: var(--accent); font-weight: 650; }
   .tom, .fejl { padding: 24px; text-align: center; color: var(--t2); }
   .fejl button { margin-top: 16px; min-height: 44px; padding: 0 24px; border: 0; border-radius: 12px;
                  background: var(--accent); color: var(--kort); font: inherit; font-weight: 650; cursor: pointer; }
@@ -283,6 +307,58 @@
     return `<section class="sektion"><h2>${overskrift}</h2><ul class="kort liste">${rk}</ul></section>`;
   }
 
+
+  // ---- Beregner
+  const PANT = cl => cl >= 100 ? 3 : 1;   // Dansk Retursystem: dåser og flasker under 1 l = 1 kr, plast 1 l og op = 3 kr
+  const enhedsord = t => t.antal >= 18 ? ["ramme", "rammer"] : t.antal > 1 ? ["pakke", "pakker"] : ["stk", "stk"];
+  const maksAntal = t => { for (const n of t.noter) { const m = n.match(/max\.?\s*(\d+)/i); if (m) return +m[1]; } return null; };
+  let beregnAntal = 3, beregnValg = {};
+  try { beregnAntal = +localStorage.getItem("tilbud-antal") || beregnAntal; } catch (e) {}
+
+  function beregnerIndhold(vare, valgmuligheder) {
+    const t = valgmuligheder.find(x => id(x) === beregnValg[vare.navn]) || valgmuligheder[0];
+    const [et, flere] = enhedsord(t);
+    const n = beregnAntal, maks = maksAntal(t);
+    const tilbudsAntal = maks ? Math.min(n, maks) : n, ekstra = n - tilbudsAntal;
+    const liter = t.antal * t.cl / 100;
+    const normalPrPak = vare.normal_literpris ? vare.normal_literpris * liter : null;
+    const varer = tilbudsAntal * t.pris + (ekstra && normalPrPak ? ekstra * normalPrPak : 0);
+    const stk = n * t.antal, pant = stk * PANT(t.cl), iAlt = varer + pant;
+    const valg = valgmuligheder.map(x => `<option value="${esc(id(x))}"${x === t ? " selected" : ""}>${esc(x.butik)} · ${kr(x.literpris)} kr/l · ${esc(x.pakning)}${x.fra > iDag ? ` · fra ${relDag(x.fra)}` : ""}</option>`).join("");
+    let noter = "";
+    if (ekstra) noter += `<p class="note rav">${esc(t.butik)} sælger max ${maks} ${maks === 1 ? et : flere} pr. kunde. De sidste ${ekstra} er regnet til normalpris${normalPrPak ? `, ca. ${kr(normalPrPak)} kr pr. ${et}` : " (ukendt, ikke med i summen)"}.</p>`;
+    if (normalPrPak) {
+      const spar = n * normalPrPak - varer;
+      if (spar > 0.5) noter += `<p class="note spar">Du sparer ca. ${kr(spar)} kr i forhold til normalpris.</p>`;
+    }
+    return `<h3>Hvad koster det?</h3>
+      <select data-beregn-valg data-vare="${esc(vare.navn)}" aria-label="Tilbud">${valg}</select>
+      <div class="stepper">
+        <button data-antal="-1" aria-label="Færre" ${n <= 1 ? "disabled" : ""}>−</button>
+        <output aria-live="polite">${n} ${n === 1 ? et : flere}<span>${stk} × ${t.cl} cl · ${kr(n * liter)} l</span></output>
+        <button data-antal="1" aria-label="Flere" ${n >= 50 ? "disabled" : ""}>+</button>
+      </div>
+      <dl class="regning tal">
+        <dt>${tilbudsAntal} × ${kr(t.pris)} kr${ekstra ? ` + ${ekstra} til normalpris` : ""}</dt><dd>${kr(varer)} kr</dd>
+        <dt>Pant ${stk} × ${kr(PANT(t.cl))} kr</dt><dd>${kr(pant)} kr</dd>
+        <dt class="i-alt">I alt inkl. pant</dt><dd>${kr(iAlt)} kr</dd>
+      </dl>${noter}`;
+  }
+
+  const beregnerData = {};
+  function beregner(vare, gaelder, kommende) {
+    const valgmuligheder = [...sorter(gaelder), ...sorter(kommende)];
+    if (!valgmuligheder.length) return "";
+    beregnerData[vare.navn] = { vare, valgmuligheder };
+    return `<div class="kort beregner ind f3" data-beregner="${esc(vare.navn)}">${beregnerIndhold(vare, valgmuligheder)}</div>`;
+  }
+  function opdaterBeregnere() {
+    for (const el of document.querySelectorAll("[data-beregner]")) {
+      const d = beregnerData[el.dataset.beregner];
+      if (d) el.innerHTML = beregnerIndhold(d.vare, d.valgmuligheder);
+    }
+  }
+
   let data;
   function tegn() {
     const opd = new Date(data.opdateret);
@@ -300,7 +376,7 @@
       const kommende = aktuelle.filter(t => t.fra > iDag);
       const bedst = sorter(gaelder)[0];
       if (flereVarer) html += `<h2 style="font-size:20px;font-weight:650;margin:32px 4px 12px">${esc(vare.emoji)} ${esc(vare.navn)}</h2>`;
-      html += helt(vare, bedst) + raad(bedst, kommende) + tidslinje(aktuelle);
+      html += helt(vare, bedst) + raad(bedst, kommende) + beregner(vare, gaelder, kommende) + tidslinje(aktuelle);
       html += liste(gaelder, "Gælder i dag", bedst && id(bedst));
       html += liste(kommende, "Kommende");
     }
@@ -309,6 +385,12 @@
   }
 
   document.addEventListener("click", e => {
+    const trin = e.target.closest("[data-antal]");
+    if (trin) {
+      beregnAntal = Math.min(50, Math.max(1, beregnAntal + +trin.dataset.antal));
+      try { localStorage.setItem("tilbud-antal", beregnAntal); } catch (e) {}
+      opdaterBeregnere(); return;
+    }
     if (e.target.closest("[data-flere]")) { visAlle = !visAlle; tegn(); return; }
     if (e.target.closest("[data-hent]")) { hent(); return; }
     const bar = e.target.closest(".bar");
@@ -319,6 +401,11 @@
         li.classList.remove("blink"); void li.offsetWidth; li.classList.add("blink");
       }
     }
+  });
+
+  document.addEventListener("change", e => {
+    const v = e.target.closest("[data-beregn-valg]");
+    if (v) { beregnValg[v.dataset.vare] = v.value; opdaterBeregnere(); }
   });
 
   function hent() {
