@@ -448,7 +448,19 @@
           v.enhed = v.enhed || "l";
           for (const t of v.tilbud) { t.enhed = t.enhed || "l"; if (t.enhedspris == null) t.enhedspris = t.literpris; }
         }
-        data = d; tegn();
+        data = d;
+        try {
+          tegn();
+          try { sessionStorage.removeItem("tilbud-genindlaest"); } catch (e) {}
+        } catch (fejl) {
+          // Typisk en gammel udgave af siden fra browserens cache, der ikke kender nye data: hent siden igen én gang.
+          let alleredeForsoegt = false;
+          try { alleredeForsoegt = sessionStorage.getItem("tilbud-genindlaest") === "1"; sessionStorage.setItem("tilbud-genindlaest", "1"); } catch (e) {}
+          if (!alleredeForsoegt) { location.reload(); return; }
+          document.getElementById("indhold").innerHTML = `<div class="kort fejl">Tilbuddene kunne ikke vises.<br>
+            <span class="lille t3">Prøv at lukke appen og åbne den igen.</span><br><button data-hent>Prøv igen</button></div>`;
+          console.error(fejl);
+        }
       })
       .catch(() => {
         document.getElementById("indhold").innerHTML = `<div class="kort fejl">Kunne ikke hente tilbuddene.<br>
