@@ -1,6 +1,6 @@
 {
- "opdateret": "2026-11-25T16:47+01:00",
- "i_dag": "2026-11-25",
+ "opdateret": "2026-11-26T00:41+01:00",
+ "i_dag": "2026-11-26",
  "varer": [
   {
    "navn": "Pepsi Max",
@@ -10,25 +10,23 @@
    "alarm_max_pris": null,
    "normal_literpris": 14.9,
    "billigst_nu": {
-    "butik": "SPAR",
-    "pris": 69.0,
+    "butik": "365discount",
+    "pris": 65.0,
     "antal": 24,
     "cl": 33,
-    "literpris": 8.71,
+    "literpris": 8.21,
     "maengde": 33,
     "enhed": "l",
-    "enhedspris": 8.71,
+    "enhedspris": 8.21,
     "pakning": "24 × 33 cl",
     "type": "?",
-    "stykpris": 2.88,
-    "fra": "2026-11-20",
-    "til": "2026-11-26",
+    "stykpris": 2.71,
+    "fra": "2026-11-26",
+    "til": "2026-12-02",
     "noter": [
-     "max 4 rammer",
-     "afhentningspris",
-     "„flere varianter“, Pepsi Max ikke nævnt"
+     "max 6 pakker"
     ],
-    "beskrivelse": "Faxe Kondi eller Pepsi: Flere varianter. Literpris 8,71. Afhentningspris Sælges kun i hele rammer. Max. 4 rammer pr. kunde pr. dag. Herefter er prisen 117,95 + pant pr. ramme. MAX. 4 RAMMER 24 X 33 CL + pant SKARP PRIS",
+    "beskrivelse": "Faxe Kondi eller Pepsi Max: Sælges i hele forpakninger Maks. 6 pakker pr. kunde 24 x 33 cl. Literpris 8,21 + pant. 1 pakke.",
     "gaelder_nu": true,
     "foerst_set": "2026-11-25"
    },
@@ -52,7 +50,7 @@
       "max 6 pakker"
      ],
      "beskrivelse": "Faxe Kondi eller Pepsi Max: Sælges i hele forpakninger Maks. 6 pakker pr. kunde 24 x 33 cl. Literpris 8,21 + pant. 1 pakke.",
-     "gaelder_nu": false,
+     "gaelder_nu": true,
      "foerst_set": "2026-11-25"
     },
     {
@@ -181,25 +179,6 @@
       "„flere varianter“, Pepsi Max ikke nævnt"
      ],
      "beskrivelse": "Faxe Kondi eller Pepsi: GOD PRIS Flere varianter. Literpris 10,73 Afhentningspris Sælges kun i hele rammer + pant 24 X 33 cl",
-     "gaelder_nu": true,
-     "foerst_set": "2026-11-25"
-    },
-    {
-     "butik": "365discount",
-     "pris": 89.0,
-     "antal": 24,
-     "cl": 33,
-     "literpris": 11.24,
-     "maengde": 33,
-     "enhed": "l",
-     "enhedspris": 11.24,
-     "pakning": "24 × 33 cl",
-     "type": "?",
-     "stykpris": 3.71,
-     "fra": "2026-11-19",
-     "til": "2026-11-25",
-     "noter": [],
-     "beskrivelse": "Faxe Kondi eller Pepsi Max: Sælges i hele forpakninger 24 x 33 cl. Literpris 11,24 + pant. 1 pakke.",
      "gaelder_nu": true,
      "foerst_set": "2026-11-25"
     },
@@ -394,7 +373,7 @@
     ],
     "beskrivelse": "Kærgården smørbar: 200 g. Kg-pris 60,00. 1 pakke. Maks. 3 pakker pr. kunde.",
     "gaelder_nu": true,
-    "foerst_set": "2026-11-25"
+    "foerst_set": "2026-11-26"
    },
    "antal_nu": 5,
    "tilbud": [
@@ -418,7 +397,7 @@
      ],
      "beskrivelse": "Kærgården: 200 g 50.00 pr. kg Ved køb af flere end 6 stk. pr. variant pr. dag er prisen op til 24.95 pr. stk.",
      "gaelder_nu": false,
-     "foerst_set": "2026-11-25"
+     "foerst_set": "2026-11-26"
     },
     {
      "butik": "SuperBrugsen",
@@ -440,7 +419,7 @@
      ],
      "beskrivelse": "Kærgården smørbar: 200 g. Kg-pris 60,00. 1 pakke. Maks. 3 pakker pr. kunde.",
      "gaelder_nu": true,
-     "foerst_set": "2026-11-25"
+     "foerst_set": "2026-11-26"
     },
     {
      "butik": "Kvickly",
@@ -460,9 +439,9 @@
       "max 3 pakker",
       "Kærgården Let ikke nævnt"
      ],
-     "beskrivelse": "Kærgården smørbar: 200 g. Kg-pris 60,00. 1 pakke. Maks. 3 pakker pr. kunde",
+     "beskrivelse": "Kærgården smørbar: 200 g. Kg-pris 60,00. Maks. 3 pakker pr. kunde. 1 pakke",
      "gaelder_nu": true,
-     "foerst_set": "2026-11-25"
+     "foerst_set": "2026-11-26"
     },
     {
      "butik": "Brugsen",
@@ -483,7 +462,7 @@
      ],
      "beskrivelse": "Kærgården smørbar: 200 g. Kg-pris 80,00. 1 pakke",
      "gaelder_nu": true,
-     "foerst_set": "2026-11-25"
+     "foerst_set": "2026-11-26"
     },
     {
      "butik": "Løvbjerg",
@@ -504,7 +483,7 @@
      ],
      "beskrivelse": "Kærgården smør: ",
      "gaelder_nu": false,
-     "foerst_set": "2026-11-25"
+     "foerst_set": "2026-11-26"
     },
     {
      "butik": "Lidl",
@@ -525,7 +504,7 @@
      ],
      "beskrivelse": "ARLA Kærgården: 200 g / stk. Pr. kg 94,75 Fast lav pris",
      "gaelder_nu": true,
-     "foerst_set": "2026-11-25"
+     "foerst_set": "2026-11-26"
     },
     {
      "butik": "føtex",
@@ -546,7 +525,7 @@
      ],
      "beskrivelse": "Kærgården økologisk smørbar eller Arla ØKO økologisk smør: 200 g. Pr. kg 95,-",
      "gaelder_nu": true,
-     "foerst_set": "2026-11-25"
+     "foerst_set": "2026-11-26"
     }
    ]
   }
