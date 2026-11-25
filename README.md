@@ -24,8 +24,8 @@ Appen ligger på
 https://tilbud.markusvej.dk/
 ```
 
-Den viser, hvad der er billigst i dag, en tidslinje over de næste 14 dage og alle tilbud. Du kan skifte
-mellem kr pr. liter og kr pr. stk. På telefonen kan siden lægges på hjemmeskærmen (iPhone: Del →
+Den viser, hvad der er billigst i dag (sammenlignet pr. liter), om det kan betale sig at vente, en
+tidslinje over de næste 14 dage og alle tilbud. På telefonen kan siden lægges på hjemmeskærmen (iPhone: Del →
 Føj til hjemmeskærm; Android: menu → Føj til startskærm), så den åbner som en app.
 
 **Opsætning (er gjort):** GitHub Pages er slået til under repoets *Settings → Pages* (branch `main`,

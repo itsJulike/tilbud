@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tilbud</title>
-<meta name="description" content="Tilbud fra tilbudsaviserne sammenlignet på literpris og stykpris">
+<meta name="description" content="Tilbud fra tilbudsaviserne sammenlignet på literpris">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Tilbud">
@@ -50,7 +50,7 @@
   .t3 { color: var(--t3); }
   .lille { font-size: 13px; }
 
-  header { padding: 8px 4px 16px; }
+  header { padding: 8px 4px 24px; }
   header .app { font-size: 13px; font-weight: 650; color: var(--t3); letter-spacing: .02em; }
   header h1 { font-size: 34px; font-weight: 650; line-height: 1.15; margin: 0; letter-spacing: -.02em; }
   header .opd { font-size: 13px; color: var(--t3); margin-top: 4px; }
@@ -59,13 +59,6 @@
   .sektion { margin-top: 32px; }
   .sektion > h2 { font-size: 13px; font-weight: 650; color: var(--t3); text-transform: uppercase;
                   letter-spacing: .06em; margin: 0 4px 8px; }
-
-  /* Segmenteret kontrol, 44 px høj */
-  .skift { display: grid; grid-template-columns: 1fr 1fr; background: var(--linje); border-radius: 12px;
-           padding: 4px; margin: 0 0 24px; }
-  .skift button { min-height: 36px; border: 0; background: none; color: var(--t2); font: inherit;
-                  font-size: 13px; font-weight: 650; border-radius: 8px; cursor: pointer; }
-  .skift button[aria-pressed="true"] { background: var(--kort); color: var(--tekst); box-shadow: var(--skygge); }
 
   /* Svaret: hvor er det billigst lige nu? */
   .helt { padding: 24px; position: relative; overflow: hidden; }
@@ -164,12 +157,11 @@
     <div class="opd" id="opdateret">&nbsp;</div>
   </header>
   <div id="indhold" aria-busy="true">
-    <div class="skelet" style="height:44px;border-radius:12px;margin-bottom:24px"></div>
     <div class="skelet" style="height:232px"></div>
     <div class="skelet" style="height:72px"></div>
   </div>
   <footer>
-    Data fra eTilbudsavis, hentet to gange i døgnet. Priser er uden pant.
+    Data fra eTilbudsavis, hentet to gange i døgnet. Alle priser er sammenlignet pr. liter og er uden pant.
     <a href="tilbud.ics">Abonnér på kalenderen</a>
   </footer>
 </main>
@@ -181,8 +173,9 @@
   const kr = v => v.toLocaleString("da-DK", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
-  let maal = "literpris", visAlle = false;
-  try { maal = localStorage.getItem("tilbud-maal") || maal; } catch (e) {}
+  // Alt sammenlignes på literpris, så pakker i forskellige størrelser kan stå side om side.
+  const maal = "literpris";
+  let visAlle = false;
 
   const iDag = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Copenhagen" }).format(new Date());
   const dato = iso => { const [y, m, d] = iso.split("-").map(Number); return new Date(Date.UTC(y, m - 1, d)); };
@@ -197,9 +190,7 @@
     return kort(iso);
   };
   const periode = t => `${kort(t.fra)} – ${kort(t.til)}`;
-  const enhed = () => maal === "literpris" ? "kr/l" : "kr/stk";
-  const andet = () => maal === "literpris" ? "stykpris" : "literpris";
-  const andenEnhed = () => maal === "literpris" ? "kr/stk" : "kr/l";
+  const enhed = () => "kr/l";
   const sorter = lst => [...lst].sort((a, b) => a[maal] - b[maal] || a.fra.localeCompare(b.fra));
   const id = t => t.butik + t.fra + t.pris;
   const initialer = n => n.replace(/[^\p{L}\p{N} ]/gu, "").split(/\s+/).filter(Boolean)
@@ -222,7 +213,7 @@
       <div class="lbl">Billigst lige nu</div>
       <div class="butik">${esc(t.butik)}</div>
       <div class="pris tal">${kr(t[maal])} <span>${enhed()}</span></div>
-      <div class="detalje">${esc(t.pakning)} for ${kr(t.pris)} kr · ${kr(t[andet()])} ${andenEnhed()}</div>
+      <div class="detalje">${esc(t.pakning)} for ${kr(t.pris)} kr</div>
       ${chips.length ? `<div class="chips">${chips.join("")}</div>` : ""}
       <div class="slut lille t3">${restTekst}
         <div class="spor"><i style="width:${Math.min(100, Math.max(6, gaaet / laengde * 100))}%"></i></div></div>
@@ -302,9 +293,7 @@
     document.getElementById("titel").textContent = flereVarer ? "Tilbud" : `${data.varer[0].emoji} ${data.varer[0].navn}`;
     document.querySelector("header .app").hidden = flereVarer;
 
-    let html = `<div class="skift" role="group" aria-label="Sammenlign på">
-      <button data-v="literpris" aria-pressed="${maal === "literpris"}">Kr pr. liter</button>
-      <button data-v="stykpris" aria-pressed="${maal === "stykpris"}">Kr pr. stk</button></div>`;
+    let html = "";
     for (const vare of data.varer) {
       const aktuelle = vare.tilbud.filter(t => t.til >= iDag);
       const gaelder = aktuelle.filter(t => t.fra <= iDag);
@@ -320,12 +309,6 @@
   }
 
   document.addEventListener("click", e => {
-    const knap = e.target.closest(".skift button");
-    if (knap) {
-      maal = knap.dataset.v;
-      try { localStorage.setItem("tilbud-maal", maal); } catch (e) {}
-      tegn(); return;
-    }
     if (e.target.closest("[data-flere]")) { visAlle = !visAlle; tegn(); return; }
     if (e.target.closest("[data-hent]")) { hent(); return; }
     const bar = e.target.closest(".bar");
