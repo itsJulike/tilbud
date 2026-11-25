@@ -348,6 +348,7 @@ def data_til_app(config, aktuelle, i_dag, nu):
         nu_ = [t for t in tilbud if t["gaelder_nu"]]
         varer.append({"navn": vare["navn"], "emoji": vare.get("emoji", ""),
                       "alarm_max_literpris": vare.get("alarm_max_literpris"),
+                      "normal_literpris": vare.get("normal_literpris"),
                       "billigst_nu": nu_[0] if nu_ else None,
                       "antal_nu": len(nu_), "tilbud": tilbud})
     return {"opdateret": nu.isoformat(timespec="minutes"), "i_dag": idag, "varer": varer}

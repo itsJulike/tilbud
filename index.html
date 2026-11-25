@@ -9,205 +9,299 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Tilbud">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A5%A4%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#f6f5f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121214" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="ikon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="ikon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
 <style>
+  /* Farver: 60 % neutral baggrund, 30 % tekst, 10 % grøn accent. Rav kun til advarsler. */
   :root {
-    --bg: #f6f5f2; --kort: #ffffff; --tekst: #1d1d1f; --svag: #6b6b70; --linje: #e4e2dc;
-    --accent: #0a6b4f; --accent-bg: #e3f3ec; --bar: #9fd3bd; --bar-bedst: #0a6b4f;
-    --bar-tekst: #0b2e22; --bar-bedst-tekst: #ffffff; --i-dag: #d9480f; --advarsel: #8a5a00;
+    --bg: #f6f5f2; --kort: #ffffff; --tekst: #1b1c1e;
+    --t2: rgb(27 28 30 / .72); --t3: rgb(27 28 30 / .56); --linje: rgb(27 28 30 / .09);
+    --accent: #0a6b4f; --accent-5: rgb(10 107 79 / .06); --accent-12: rgb(10 107 79 / .12);
+    --bar: #a9d9c4; --bar-bedst: #0a6b4f; --i-dag: #c2410c;
+    --rav: #8a5a00; --rav-bg: #fdf3dc;
+    --skygge: 0 1px 2px rgb(60 50 20 / .05), 0 8px 24px rgb(60 50 20 / .06);
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #141416; --kort: #1e1e21; --tekst: #f2f2f4; --svag: #a0a0a8; --linje: #2e2e33;
-      --accent: #5fd3a6; --accent-bg: #173329; --bar: #2c5a49; --bar-bedst: #5fd3a6;
-      --bar-tekst: #e6f7ef; --bar-bedst-tekst: #0b2e22; --i-dag: #ff8a50; --advarsel: #f0c060;
+    :root {
+      --bg: #121214; --kort: #1c1c1f; --tekst: #f2f2f4;
+      --t2: rgb(242 242 244 / .74); --t3: rgb(242 242 244 / .56); --linje: rgb(242 242 244 / .09);
+      --accent: #5fd3a6; --accent-5: rgb(95 211 166 / .07); --accent-12: rgb(95 211 166 / .14);
+      --bar: #2b5546; --bar-bedst: #5fd3a6; --i-dag: #ff8a50;
+      --rav: #f0c060; --rav-bg: rgb(240 192 96 / .12);
+      --skygge: 0 1px 2px rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .25);
       color-scheme: dark;
     }
   }
   * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
     margin: 0; background: var(--bg); color: var(--tekst);
-    font: 16px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+    font: 400 16px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    -webkit-tap-highlight-color: transparent;
   }
-  main { max-width: 760px; margin: 0 auto; padding: 16px; }
-  header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
-           margin: 8px 0 20px; }
-  h1 { font-size: 28px; margin: 0; letter-spacing: -0.02em; }
-  .opdateret { color: var(--svag); font-size: 13px; text-align: right; }
-  h2 { font-size: 22px; margin: 28px 0 12px; }
-  h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--svag);
-       margin: 24px 0 8px; font-weight: 600; }
-  .kort { background: var(--kort); border: 1px solid var(--linje); border-radius: 14px; }
+  /* Fire størrelser: 34 · 20 · 16 · 13. To vægte: 400 · 650. */
+  main { max-width: 560px; margin: 0 auto; padding: 16px 16px 48px; }
+  .tal { font-variant-numeric: tabular-nums; }
+  .t3 { color: var(--t3); }
+  .lille { font-size: 13px; }
 
-  .helt { padding: 18px; display: grid; grid-template-columns: 1fr auto; gap: 4px 16px;
-          border-color: var(--accent); }
-  .helt .lbl { grid-column: 1 / -1; font-size: 13px; color: var(--accent); font-weight: 600; }
-  .helt .butik { font-size: 24px; font-weight: 700; }
-  .helt .pris { text-align: right; font-size: 30px; font-weight: 700; color: var(--accent);
-                font-variant-numeric: tabular-nums; line-height: 1.1; }
-  .helt .pris small { display: block; font-size: 14px; font-weight: 500; color: var(--svag); }
-  .helt .detalje { grid-column: 1 / -1; color: var(--svag); font-size: 14px; }
+  header { padding: 8px 4px 16px; }
+  header .app { font-size: 13px; font-weight: 650; color: var(--t3); letter-spacing: .02em; }
+  header h1 { font-size: 34px; font-weight: 650; line-height: 1.15; margin: 0; letter-spacing: -.02em; }
+  header .opd { font-size: 13px; color: var(--t3); margin-top: 4px; }
 
-  .skift { display: inline-flex; background: var(--kort); border: 1px solid var(--linje);
-           border-radius: 999px; padding: 3px; margin-top: 16px; }
-  .skift button { border: 0; background: none; color: var(--svag); font: inherit; font-size: 14px;
-                  padding: 6px 14px; border-radius: 999px; cursor: pointer; }
-  .skift button[aria-pressed="true"] { background: var(--accent-bg); color: var(--accent);
-                                       font-weight: 600; }
+  .kort { background: var(--kort); border-radius: 24px; box-shadow: var(--skygge); }
+  .sektion { margin-top: 32px; }
+  .sektion > h2 { font-size: 13px; font-weight: 650; color: var(--t3); text-transform: uppercase;
+                  letter-spacing: .06em; margin: 0 4px 8px; }
 
-  .tidslinje { padding: 12px 12px 8px; overflow: hidden; }
-  .tl-gitter { display: grid; grid-template-columns: minmax(92px, 130px) repeat(14, minmax(0, 1fr));
-               column-gap: 2px; row-gap: 5px; align-items: center; }
-  .tl-navn { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-             padding-right: 6px; }
-  .tl-navn b { font-variant-numeric: tabular-nums; display: inline-block; min-width: 3.1em; }
+  /* Segmenteret kontrol, 44 px høj */
+  .skift { display: grid; grid-template-columns: 1fr 1fr; background: var(--linje); border-radius: 12px;
+           padding: 4px; margin: 0 0 24px; }
+  .skift button { min-height: 36px; border: 0; background: none; color: var(--t2); font: inherit;
+                  font-size: 13px; font-weight: 650; border-radius: 8px; cursor: pointer; }
+  .skift button[aria-pressed="true"] { background: var(--kort); color: var(--tekst); box-shadow: var(--skygge); }
+
+  /* Svaret: hvor er det billigst lige nu? */
+  .helt { padding: 24px; position: relative; overflow: hidden; }
+  .helt::before { content: ""; position: absolute; inset: -40% -20% auto auto; width: 70%; aspect-ratio: 1;
+                  background: radial-gradient(closest-side, var(--accent-12), transparent); pointer-events: none; }
+  .helt .lbl { font-size: 13px; font-weight: 650; color: var(--accent); }
+  .helt .butik { font-size: 20px; font-weight: 650; margin-top: 4px; }
+  .helt .pris { font-size: 34px; font-weight: 650; line-height: 1.1; margin-top: 16px; letter-spacing: -.02em; }
+  .helt .pris span { font-size: 16px; font-weight: 400; color: var(--t2); letter-spacing: 0; }
+  .helt .detalje { color: var(--t2); margin-top: 4px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .chip { font-size: 13px; font-weight: 650; padding: 4px 12px; border-radius: 999px;
+          background: var(--accent-5); color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent-12); }
+  .chip.rav { background: var(--rav-bg); color: var(--rav); box-shadow: none; }
+  .chip.neutral { background: var(--linje); color: var(--t2); box-shadow: none; }
+  .slut { margin-top: 16px; }
+  .slut .spor { height: 4px; border-radius: 4px; background: var(--linje); overflow: hidden; margin-top: 8px; }
+  .slut .spor i { display: block; height: 100%; background: var(--accent); border-radius: 4px; }
+
+  /* Råd: købe nu eller vente? */
+  .raad { display: grid; grid-template-columns: 40px 1fr; gap: 0 16px; align-items: center;
+          padding: 16px 24px; margin-top: 12px; }
+  .raad .ikon { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center;
+                font-size: 20px; background: var(--accent-5); }
+  .raad.vent .ikon { background: var(--rav-bg); }
+  .raad b { font-weight: 650; }
+  .raad p { margin: 0; }
+  .raad p + p { color: var(--t2); font-size: 13px; }
+
+  /* Tidslinje */
+  .tidslinje { padding: 16px 12px 12px; }
+  .tl-gitter { display: grid; grid-template-columns: minmax(72px, 120px) repeat(14, minmax(0, 1fr));
+               column-gap: 1px; row-gap: 4px; align-items: center; }
+  .tl-navn { font-size: 13px; line-height: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+             padding-right: 8px; color: var(--t2); }
+  .tl-navn b { font-weight: 650; color: var(--tekst); display: block; }
   .tl-navn.bedst b { color: var(--accent); }
-  .tl-dag { font-size: 11px; color: var(--svag); text-align: center; line-height: 1.2;
-            padding: 2px 0 4px; border-bottom: 1px solid var(--linje); align-self: stretch; }
-  .tl-dag b { display: block; font-size: 13px; color: var(--tekst); font-weight: 600; }
+  .tl-dag { font-size: 13px; color: var(--t3); text-align: center; line-height: 1.3; padding: 0 0 8px; white-space: nowrap; overflow: visible;
+            align-self: stretch; border-radius: 8px 8px 0 0; }
+  .tl-dag b { display: block; font-weight: 650; color: var(--t2); }
   .tl-dag.i-dag, .tl-dag.i-dag b { color: var(--i-dag); }
-  .tl-dag.weekend { background: color-mix(in srgb, var(--linje) 40%, transparent); }
-  .bar { border-radius: 6px; background: var(--bar); height: 24px; cursor: pointer; border: 0;
-         padding: 0; }
-  .bar.bedst { background: var(--bar-bedst); color: var(--bar-bedst-tekst); }
+  .tl-dag.weekend { background: var(--linje); }
+  .bar { height: 36px; border: 0; padding: 0; border-radius: 8px; background: var(--bar); cursor: pointer; }
+  .bar.bedst { background: var(--bar-bedst); }
   .bar.fortsat-v { border-top-left-radius: 0; border-bottom-left-radius: 0; }
   .bar.fortsat-h { border-top-right-radius: 0; border-bottom-right-radius: 0; }
-  .tl-forklaring { font-size: 12px; color: var(--svag); margin: 8px 2px 0; }
+  .tl-forklaring { font-size: 13px; color: var(--t3); margin: 12px 4px 0; }
+  .vis-flere { display: block; width: 100%; min-height: 44px; margin-top: 8px; border: 0; border-radius: 12px;
+               background: var(--accent-5); color: var(--accent); font: inherit; font-size: 13px; font-weight: 650;
+               cursor: pointer; }
 
-  .liste { list-style: none; margin: 0; padding: 0; }
-  .liste li { padding: 14px 16px; display: grid; grid-template-columns: 1fr auto; gap: 2px 12px;
-              border-top: 1px solid var(--linje); }
-  .liste li:first-child { border-top: 0; }
-  .liste li.fremhaevet { background: var(--accent-bg); }
-  .liste .butik { font-weight: 650; font-size: 17px; }
-  .liste .tal { text-align: right; font-variant-numeric: tabular-nums; }
-  .liste .tal .stor { font-weight: 700; font-size: 18px; }
-  .liste .tal .lille { color: var(--svag); font-size: 13px; }
-  .liste .info { color: var(--svag); font-size: 14px; grid-column: 1 / -1; }
-  .liste .noter { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
-  .maerke { font-size: 12px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--linje);
-            color: var(--svag); }
-  .maerke.usikker { color: var(--advarsel); border-color: currentColor; }
-  .tom { padding: 16px; color: var(--svag); }
-  footer { color: var(--svag); font-size: 13px; margin: 32px 0 16px; }
-  footer a { color: inherit; }
-  .fejl { padding: 16px; color: var(--advarsel); }
-  @media (max-width: 480px) {
-    .tl-dag { font-size: 10px; } .tl-dag b { font-size: 11px; }
-    .tl-navn { font-size: 12px; }
-    .helt .butik { font-size: 21px; } .helt .pris { font-size: 26px; }
-  }
+  /* Liste */
+  .liste { list-style: none; margin: 0; padding: 4px 0; }
+  .liste li { display: grid; grid-template-columns: 40px 1fr auto; gap: 0 12px; padding: 12px 16px; align-items: start;
+              border-radius: 16px; margin: 0 4px; scroll-margin: 96px; }
+  .liste li + li { box-shadow: 0 -1px 0 var(--linje); }
+  .liste li.fremhaevet { background: var(--accent-5); box-shadow: none; }
+  .liste li.fremhaevet + li { box-shadow: none; }
+  .logo { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; font-size: 13px;
+          font-weight: 650; background: var(--linje); color: var(--t2); }
+  .fremhaevet .logo { background: var(--accent); color: var(--kort); }
+  .liste .navn { font-weight: 650; }
+  .liste .info { font-size: 13px; color: var(--t2); }
+  .liste .pris { text-align: right; font-weight: 650; }
+  .liste .pris span { display: block; font-size: 13px; font-weight: 400; color: var(--t3); }
+  .liste .chips { grid-column: 2 / -1; margin-top: 8px; gap: 4px; }
+  .liste .chip { font-size: 13px; font-weight: 400; padding: 0 8px; }
+
+  .tom, .fejl { padding: 24px; text-align: center; color: var(--t2); }
+  .fejl button { margin-top: 16px; min-height: 44px; padding: 0 24px; border: 0; border-radius: 12px;
+                 background: var(--accent); color: var(--kort); font: inherit; font-weight: 650; cursor: pointer; }
+  footer { color: var(--t3); font-size: 13px; margin: 48px 4px 0; }
+  footer a { color: var(--accent); }
+
+  /* Indlæsning */
+  .skelet { border-radius: 24px; background: var(--kort); box-shadow: var(--skygge); margin-bottom: 12px; position: relative; overflow: hidden; }
+  .skelet::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+                   background: linear-gradient(90deg, transparent, var(--linje), transparent);
+                   animation: glimt 1.2s infinite; }
+  @keyframes glimt { to { transform: translateX(100%); } }
+
+  /* Lille fejring af svaret */
+  .ind { animation: ind .45s cubic-bezier(.2,.8,.2,1) both; }
+  .ind.f2 { animation-delay: .08s; } .ind.f3 { animation-delay: .16s; }
+  @keyframes ind { from { opacity: 0; transform: translateY(8px) scale(.98); } }
+  .blink { animation: blink 1.6s ease-out; }
+  @keyframes blink { from { background: var(--accent-12); } }
+  @media (prefers-reduced-motion: reduce) { .ind, .blink, .skelet::after { animation: none; } }
 </style>
 </head>
 <body>
 <main>
   <header>
-    <h1>Tilbud</h1>
-    <div class="opdateret" id="opdateret"></div>
+    <div class="app">Tilbud</div>
+    <h1 id="titel">Pepsi Max</h1>
+    <div class="opd" id="opdateret">&nbsp;</div>
   </header>
-  <div id="indhold"><p class="tom">Henter tilbud …</p></div>
+  <div id="indhold" aria-busy="true">
+    <div class="skelet" style="height:44px;border-radius:12px;margin-bottom:24px"></div>
+    <div class="skelet" style="height:232px"></div>
+    <div class="skelet" style="height:72px"></div>
+  </div>
   <footer>
     Data fra eTilbudsavis, hentet to gange i døgnet. Priser er uden pant.
-    Type „?“: avisen skriver ikke dåse eller flaske.
-    <a href="tilbud.ics">Kalender (.ics)</a>
+    <a href="tilbud.ics">Abonnér på kalenderen</a>
   </footer>
 </main>
 <script>
 (() => {
-  const DAGE = 14;
+  const DAGE = 14, FOERST_VIST = 6;
   const UGEDAG = ["søn", "man", "tir", "ons", "tor", "fre", "lør"];
   const UGEDAG_LANG = ["søndag", "mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag"];
   const kr = v => v.toLocaleString("da-DK", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
-  let maal = "literpris";
+  let maal = "literpris", visAlle = false;
   try { maal = localStorage.getItem("tilbud-maal") || maal; } catch (e) {}
 
-  // I dag i dansk tid som ÅÅÅÅ-MM-DD
   const iDag = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Copenhagen" }).format(new Date());
   const dato = iso => { const [y, m, d] = iso.split("-").map(Number); return new Date(Date.UTC(y, m - 1, d)); };
   const plus = (iso, n) => { const d = dato(iso); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+  const dageTil = iso => Math.round((dato(iso) - dato(iDag)) / 864e5);
   const kort = iso => { const d = dato(iso); return `${UGEDAG[d.getUTCDay()]} ${d.getUTCDate()}/${d.getUTCMonth() + 1}`; };
+  const relDag = iso => {
+    const n = dageTil(iso);
+    if (n === 0) return "i dag";
+    if (n === 1) return "i morgen";
+    if (n > 1 && n < 7) return UGEDAG_LANG[dato(iso).getUTCDay()];
+    return kort(iso);
+  };
   const periode = t => `${kort(t.fra)} – ${kort(t.til)}`;
-
-  function tilOgMed(t) {
-    const dage = Math.round((dato(t.til) - dato(iDag)) / 864e5);
-    if (dage === 0) return "kun i dag";
-    if (dage === 1) return "til og med i morgen";
-    if (dage < 7) return `til og med ${UGEDAG_LANG[dato(t.til).getUTCDay()]}`;
-    return `til og med ${kort(t.til)}`;
-  }
-
   const enhed = () => maal === "literpris" ? "kr/l" : "kr/stk";
   const andet = () => maal === "literpris" ? "stykpris" : "literpris";
   const andenEnhed = () => maal === "literpris" ? "kr/stk" : "kr/l";
   const sorter = lst => [...lst].sort((a, b) => a[maal] - b[maal] || a.fra.localeCompare(b.fra));
+  const id = t => t.butik + t.fra + t.pris;
+  const initialer = n => n.replace(/[^\p{L}\p{N} ]/gu, "").split(/\s+/).filter(Boolean)
+    .map(o => o[0]).join("").slice(0, 2).toUpperCase() || n.slice(0, 2);
+  const usikker = t => t.noter.some(n => n.includes("ikke nævnt"));
 
-  function helt(vare, gaelder) {
-    if (!gaelder.length) return `<div class="kort tom">Ingen tilbud på ${esc(vare.navn)} lige nu.</div>`;
-    const t = sorter(gaelder)[0];
-    return `<div class="kort helt">
-      <div class="lbl">Billigst i dag</div>
+  function helt(vare, t) {
+    if (!t) return `<div class="kort tom ind">Ingen tilbud på ${esc(vare.navn)} lige nu.<br>
+      <span class="lille t3">Appen holder øje og viser dem her, så snart de dukker op.</span></div>`;
+    const chips = [];
+    if (vare.normal_literpris) {
+      const spar = Math.round((1 - t.literpris / vare.normal_literpris) * 100);
+      if (spar > 0) chips.push(`<span class="chip">${spar} % under normalpris</span>`);
+    }
+    if (vare.alarm_max_literpris && t.literpris <= vare.alarm_max_literpris) chips.push(`<span class="chip">Under din grænse</span>`);
+    if (usikker(t)) chips.push(`<span class="chip rav">Avisen nævner ikke ${esc(vare.navn)}</span>`);
+    const laengde = dageTil(t.til) - dageTil(t.fra) + 1, gaaet = -dageTil(t.fra) + 1;
+    const restTekst = dageTil(t.til) === 0 ? "Slutter i dag" : `Gælder til og med ${relDag(t.til)}`;
+    return `<div class="kort helt ind">
+      <div class="lbl">Billigst lige nu</div>
       <div class="butik">${esc(t.butik)}</div>
-      <div class="pris">${kr(t[maal])}<small>${enhed()} · ${kr(t[andet()])} ${andenEnhed()}</small></div>
-      <div class="detalje">${esc(t.pakning)} for ${kr(t.pris)} kr · ${tilOgMed(t)}</div>
+      <div class="pris tal">${kr(t[maal])} <span>${enhed()}</span></div>
+      <div class="detalje">${esc(t.pakning)} for ${kr(t.pris)} kr · ${kr(t[andet()])} ${andenEnhed()}</div>
+      ${chips.length ? `<div class="chips">${chips.join("")}</div>` : ""}
+      <div class="slut lille t3">${restTekst}
+        <div class="spor"><i style="width:${Math.min(100, Math.max(6, gaaet / laengde * 100))}%"></i></div></div>
     </div>`;
+  }
+
+  function raad(nu, kommende) {
+    const snart = sorter(kommende.filter(t => dageTil(t.fra) <= 7))[0];
+    if (snart && (!nu || snart[maal] < nu[maal] - 0.005)) {
+      const forskel = nu ? ` – ${kr(nu[maal] - snart[maal])} ${enhed()} billigere` : "";
+      return `<div class="kort raad vent ind f2"><div class="ikon">⏳</div><div>
+        <p><b>Vent til ${relDag(snart.fra)}</b>${forskel}</p>
+        <p>${esc(snart.butik)}: ${kr(snart[maal])} ${enhed()} · ${esc(snart.pakning)} for ${kr(snart.pris)} kr · ${periode(snart)}</p></div></div>`;
+    }
+    if (nu) return `<div class="kort raad ind f2"><div class="ikon">✅</div><div>
+      <p><b>Slå til nu</b></p><p>Der er ikke noget billigere på vej i de aviser, der er ude.</p></div></div>`;
+    return "";
   }
 
   function tidslinje(tilbud) {
     const slut = plus(iDag, DAGE - 1);
-    const synlige = sorter(tilbud.filter(t => t.til >= iDag && t.fra <= slut));
-    if (!synlige.length) return "";
-    // Billigst pr. dag, så den kan fremhæves
+    const alle = sorter(tilbud.filter(t => t.til >= iDag && t.fra <= slut));
+    if (!alle.length) return "";
+    const synlige = visAlle ? alle : alle.slice(0, FOERST_VIST);
     const bedstPrDag = {};
     for (let i = 0; i < DAGE; i++) {
       const d = plus(iDag, i);
-      const paa = synlige.filter(t => t.fra <= d && d <= t.til);
+      const paa = alle.filter(t => t.fra <= d && d <= t.til);
       if (paa.length) bedstPrDag[d] = Math.min(...paa.map(t => t[maal]));
     }
     let html = "";
     for (let i = 0; i < DAGE; i++) {
-      const d = dato(plus(iDag, i)); const wd = d.getUTCDay();
-      html += `<div class="tl-dag${i === 0 ? " i-dag" : ""}${wd === 0 || wd === 6 ? " weekend" : ""}" style="grid-row:1;grid-column:${i + 2}" title="${kort(plus(iDag, i))}">${UGEDAG[wd][0].toUpperCase()}<b>${d.getUTCDate()}</b></div>`;
+      const d = dato(plus(iDag, i)), wd = d.getUTCDay();
+      html += `<div class="tl-dag${i === 0 ? " i-dag" : ""}${wd === 0 || wd === 6 ? " weekend" : ""}" style="grid-row:1;grid-column:${i + 2}" title="${kort(plus(iDag, i))}">${UGEDAG[wd][0].toUpperCase()}<b>${i === 0 || wd === 1 ? d.getUTCDate() : "&nbsp;"}</b></div>`;
     }
     synlige.forEach((t, r) => {
-      const start = Math.max(0, Math.round((dato(t.fra) - dato(iDag)) / 864e5));
-      const stop = Math.min(DAGE - 1, Math.round((dato(t.til) - dato(iDag)) / 864e5));
+      const start = Math.max(0, dageTil(t.fra)), stop = Math.min(DAGE - 1, dageTil(t.til));
       let bedst = false;
       for (let i = start; i <= stop; i++) if (bedstPrDag[plus(iDag, i)] === t[maal]) bedst = true;
       const kl = ["bar", bedst ? "bedst" : "", t.fra < iDag ? "fortsat-v" : "", t.til > slut ? "fortsat-h" : ""].join(" ");
       const titel = `${t.butik}: ${kr(t[maal])} ${enhed()}, ${t.pakning} for ${kr(t.pris)} kr, ${periode(t)}`;
-      html += `<div class="tl-navn${bedst ? " bedst" : ""}" style="grid-row:${r + 2};grid-column:1"><b>${kr(t[maal])}</b> ${esc(t.butik)}</div>`;
-      html += `<button class="${kl}" style="grid-row:${r + 2};grid-column:${start + 2} / ${stop + 3}" title="${esc(titel)}" aria-label="${esc(titel)}" data-maal="${esc(t.butik + t.fra + t.pris)}"></button>`;
+      html += `<div class="tl-navn${bedst ? " bedst" : ""}" style="grid-row:${r + 2};grid-column:1"><b class="tal">${kr(t[maal])}</b> ${esc(t.butik)}</div>`;
+      html += `<button class="${kl}" style="grid-row:${r + 2};grid-column:${start + 2} / ${stop + 3}" aria-label="${esc(titel)}" data-id="${esc(id(t))}"></button>`;
     });
-    return `<h3>De næste 14 dage</h3><div class="kort tidslinje"><div class="tl-gitter">${html}</div>
-      <p class="tl-forklaring">Mørk bjælke = billigst på mindst én af dagene. Tryk for detaljer.</p></div>`;
+    const flere = alle.length > FOERST_VIST
+      ? `<button class="vis-flere" data-flere>${visAlle ? "Vis færre" : `Vis alle ${alle.length} tilbud`}</button>` : "";
+    return `<section class="sektion"><h2>De næste 14 dage</h2><div class="kort tidslinje">
+      <div class="tl-gitter">${html}</div>
+      <p class="tl-forklaring">Tal i toppen er i dag og mandage. Mørkegrøn = billigst på mindst én dag. Tryk på en bjælke for detaljer.</p>${flere}</div></section>`;
   }
 
   function liste(lst, overskrift, bedstId) {
     if (!lst.length) return "";
     const rk = sorter(lst).map(t => {
-      const id = t.butik + t.fra + t.pris;
-      const maerker = [];
-      if (t.type !== "?") maerker.push(`<span class="maerke">${esc(t.type)}</span>`);
-      for (const n of t.noter) maerker.push(`<span class="maerke${n.includes("ikke nævnt") ? " usikker" : ""}">${esc(n)}</span>`);
-      return `<li id="t-${esc(id)}" class="${id === bedstId ? "fremhaevet" : ""}" title="${esc(t.beskrivelse)}">
-        <div class="butik">${esc(t.butik)}</div>
-        <div class="tal"><span class="stor">${kr(t[maal])}</span> <span class="lille">${enhed()}</span></div>
-        <div class="info">${esc(t.pakning)} for ${kr(t.pris)} kr · ${kr(t[andet()])} ${andenEnhed()} · ${periode(t)}</div>
-        ${maerker.length ? `<div class="noter">${maerker.join("")}</div>` : ""}
+      const chips = [];
+      if (t.type !== "?") chips.push(`<span class="chip neutral">${esc(t.type)}</span>`);
+      for (const n of t.noter) chips.push(`<span class="chip ${n.includes("ikke nævnt") ? "rav" : "neutral"}">${esc(n)}</span>`);
+      const naar = t.fra > iDag ? `fra ${relDag(t.fra)}` : `til og med ${relDag(t.til)}`;
+      return `<li id="t-${esc(id(t))}" class="${id(t) === bedstId ? "fremhaevet" : ""}" title="${esc(t.beskrivelse)}">
+        <div class="logo" aria-hidden="true">${esc(initialer(t.butik))}</div>
+        <div><div class="navn">${esc(t.butik)}</div>
+          <div class="info">${esc(t.pakning)} for ${kr(t.pris)} kr · ${naar}</div></div>
+        <div class="pris tal">${kr(t[maal])}<span>${enhed()}</span></div>
+        ${chips.length ? `<div class="chips">${chips.join("")}</div>` : ""}
       </li>`;
     }).join("");
-    return `<h3>${overskrift}</h3><ul class="kort liste">${rk}</ul>`;
+    return `<section class="sektion"><h2>${overskrift}</h2><ul class="kort liste">${rk}</ul></section>`;
   }
 
   let data;
   function tegn() {
     const opd = new Date(data.opdateret);
-    document.getElementById("opdateret").textContent =
-      "Opdateret " + opd.toLocaleString("da-DK", { weekday: "short", day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Copenhagen" });
+    const dagTxt = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Copenhagen" }).format(opd);
+    const kl = opd.toLocaleTimeString("da-DK", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Copenhagen" });
+    document.getElementById("opdateret").textContent = `Opdateret ${relDag(dagTxt)} kl. ${kl}`;
+    const flereVarer = data.varer.length > 1;
+    document.getElementById("titel").textContent = flereVarer ? "Tilbud" : `${data.varer[0].emoji} ${data.varer[0].navn}`;
+    document.querySelector("header .app").hidden = flereVarer;
+
     let html = `<div class="skift" role="group" aria-label="Sammenlign på">
       <button data-v="literpris" aria-pressed="${maal === "literpris"}">Kr pr. liter</button>
       <button data-v="stykpris" aria-pressed="${maal === "stykpris"}">Kr pr. stk</button></div>`;
@@ -216,13 +310,13 @@
       const gaelder = aktuelle.filter(t => t.fra <= iDag);
       const kommende = aktuelle.filter(t => t.fra > iDag);
       const bedst = sorter(gaelder)[0];
-      html += `<h2>${esc(vare.emoji)} ${esc(vare.navn)}</h2>`;
-      html += helt(vare, gaelder);
-      html += tidslinje(aktuelle);
-      html += liste(gaelder, "Gælder i dag", bedst && bedst.butik + bedst.fra + bedst.pris);
+      if (flereVarer) html += `<h2 style="font-size:20px;font-weight:650;margin:32px 4px 12px">${esc(vare.emoji)} ${esc(vare.navn)}</h2>`;
+      html += helt(vare, bedst) + raad(bedst, kommende) + tidslinje(aktuelle);
+      html += liste(gaelder, "Gælder i dag", bedst && id(bedst));
       html += liste(kommende, "Kommende");
     }
-    document.getElementById("indhold").innerHTML = html;
+    const el = document.getElementById("indhold");
+    el.innerHTML = html; el.removeAttribute("aria-busy");
   }
 
   document.addEventListener("click", e => {
@@ -232,20 +326,30 @@
       try { localStorage.setItem("tilbud-maal", maal); } catch (e) {}
       tegn(); return;
     }
+    if (e.target.closest("[data-flere]")) { visAlle = !visAlle; tegn(); return; }
+    if (e.target.closest("[data-hent]")) { hent(); return; }
     const bar = e.target.closest(".bar");
     if (bar) {
-      const el = document.getElementById("t-" + bar.dataset.maal);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "center" });
-        el.animate([{ outline: "2px solid var(--accent)" }, { outline: "2px solid transparent" }], { duration: 1600 });
+      const li = document.getElementById("t-" + bar.dataset.id);
+      if (li) {
+        li.scrollIntoView({ behavior: "smooth", block: "center" });
+        li.classList.remove("blink"); void li.offsetWidth; li.classList.add("blink");
       }
     }
   });
 
-  fetch("aktuelle.json", { cache: "no-store" })
-    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(d => { data = d; tegn(); })
-    .catch(() => { document.getElementById("indhold").innerHTML = '<p class="fejl">Kunne ikke hente tilbuddene. Prøv igen om lidt.</p>'; });
+  function hent() {
+    fetch("aktuelle.json", { cache: "no-store" })
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(d => { data = d; tegn(); })
+      .catch(() => {
+        document.getElementById("indhold").innerHTML = `<div class="kort fejl">Kunne ikke hente tilbuddene.<br>
+          <span class="lille t3">Tjek forbindelsen og prøv igen.</span><br><button data-hent>Prøv igen</button></div>`;
+      });
+  }
+  hent();
+  // Hent nyt, når appen åbnes fra hjemmeskærmen igen
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && data) hent(); });
 })();
 </script>
 </body>
