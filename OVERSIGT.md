@@ -1,6 +1,6 @@
 # Tilbud
 
-Opdateret 26/11/2026 kl. 00:41. Data fra eTilbudsavis. Sorteret efter pris pr. liter eller kg, så forskellige størrelser kan sammenlignes. Priserne er uden pant.
+Opdateret 26/11/2026 kl. 16:26. Data fra eTilbudsavis. Sorteret efter pris pr. liter eller kg, så forskellige størrelser kan sammenlignes. Priserne er uden pant.
 
 ## 🥤 Pepsi Max
 
@@ -52,13 +52,13 @@ Opdateret 26/11/2026 kl. 00:41. Data fra eTilbudsavis. Sorteret efter pris pr. l
 
 ## 🧈 Kærgården Let
 
-> **Billigst lige nu:** 60,00 kr/kg (12,00 kr/stk) hos SuperBrugsen – 200 g for 12,00 kr, fre 20/11 – tor 26/11
+> **Billigst lige nu:** 60,00 kr/kg (12,00 kr/stk) hos Kvickly – 200 g for 12,00 kr, fre 20/11 – tor 26/11
 
 ### Dag for dag
 
 | Dag | Billigst | Kr/kg | Kr/stk | Pakning | Næstbedst |
 |---|---|---:|---:|---|---|
-| tor 26/11 | SuperBrugsen | **60,00** | 12,00 | 200 g | Kvickly 60,00 kr/kg (200 g) |
+| tor 26/11 | Kvickly | **60,00** | 12,00 | 200 g | SuperBrugsen 60,00 kr/kg (200 g) |
 | fre 27/11 | Brugsen | **80,00** | 16,00 | 200 g | Løvbjerg 84,95 kr/kg (200 g) |
 | lør 28/11 | Brugsen | **80,00** | 16,00 | 200 g | Løvbjerg 84,95 kr/kg (200 g) |
 | søn 29/11 | Brugsen | **80,00** | 16,00 | 200 g | Løvbjerg 84,95 kr/kg (200 g) |
@@ -77,8 +77,8 @@ Opdateret 26/11/2026 kl. 00:41. Data fra eTilbudsavis. Sorteret efter pris pr. l
 
 | Kr/kg | Kr/stk | Butik | Pris | Pakning | Type | Periode | Noter |
 |---:|---:|---|---:|---|:-:|---|---|
-| **60,00** | 12,00 | SuperBrugsen | 12,00 | 200 g | ? | fre 20/11 – tor 26/11 | max 3 pakker, Kærgården Let ikke nævnt |
 | **60,00** | 12,00 | Kvickly | 12,00 | 200 g | ? | fre 20/11 – tor 26/11 | max 3 pakker, Kærgården Let ikke nævnt |
+| **60,00** | 12,00 | SuperBrugsen | 12,00 | 200 g | ? | fre 20/11 – tor 26/11 | max 3 pakker, Kærgården Let ikke nævnt |
 | **80,00** | 16,00 | Brugsen | 16,00 | 200 g | ? | fre 20/11 – tor 3/12 | Kærgården Let ikke nævnt |
 | **94,75** | 18,95 | Lidl | 18,95 | 200 g | ? | søn 3/5 – tor 31/12 | Kærgården Let ikke nævnt |
 | **95,00** | 19,00 | føtex | 19,00 | 200 g | ? | fre 13/11 – tor 26/11 | Kærgården Let ikke nævnt |

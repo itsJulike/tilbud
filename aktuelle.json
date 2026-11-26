@@ -1,5 +1,5 @@
 {
- "opdateret": "2026-11-26T00:41+01:00",
+ "opdateret": "2026-11-26T16:26+01:00",
  "i_dag": "2026-11-26",
  "varer": [
   {
@@ -354,7 +354,7 @@
    "alarm_max_pris": 15.0,
    "normal_literpris": null,
    "billigst_nu": {
-    "butik": "SuperBrugsen",
+    "butik": "Kvickly",
     "pris": 12.0,
     "antal": 1,
     "gram": 200,
@@ -371,7 +371,7 @@
      "max 3 pakker",
      "Kærgården Let ikke nævnt"
     ],
-    "beskrivelse": "Kærgården smørbar: 200 g. Kg-pris 60,00. 1 pakke. Maks. 3 pakker pr. kunde.",
+    "beskrivelse": "Kærgården smørbar: 200 g. Kg-pris 60,00. 1 pakke. Maks. 3 pakker pr. kunde",
     "gaelder_nu": true,
     "foerst_set": "2026-11-26"
    },
@@ -400,6 +400,28 @@
      "foerst_set": "2026-11-26"
     },
     {
+     "butik": "Kvickly",
+     "pris": 12.0,
+     "antal": 1,
+     "gram": 200,
+     "kilopris": 60.0,
+     "maengde": 200,
+     "enhed": "kg",
+     "enhedspris": 60.0,
+     "pakning": "200 g",
+     "type": "?",
+     "stykpris": 12.0,
+     "fra": "2026-11-20",
+     "til": "2026-11-26",
+     "noter": [
+      "max 3 pakker",
+      "Kærgården Let ikke nævnt"
+     ],
+     "beskrivelse": "Kærgården smørbar: 200 g. Kg-pris 60,00. 1 pakke. Maks. 3 pakker pr. kunde",
+     "gaelder_nu": true,
+     "foerst_set": "2026-11-26"
+    },
+    {
      "butik": "SuperBrugsen",
      "pris": 12.0,
      "antal": 1,
@@ -418,28 +440,6 @@
       "Kærgården Let ikke nævnt"
      ],
      "beskrivelse": "Kærgården smørbar: 200 g. Kg-pris 60,00. 1 pakke. Maks. 3 pakker pr. kunde.",
-     "gaelder_nu": true,
-     "foerst_set": "2026-11-26"
-    },
-    {
-     "butik": "Kvickly",
-     "pris": 12.0,
-     "antal": 1,
-     "gram": 200,
-     "kilopris": 60.0,
-     "maengde": 200,
-     "enhed": "kg",
-     "enhedspris": 60.0,
-     "pakning": "200 g",
-     "type": "?",
-     "stykpris": 12.0,
-     "fra": "2026-11-20",
-     "til": "2026-11-26",
-     "noter": [
-      "max 3 pakker",
-      "Kærgården Let ikke nævnt"
-     ],
-     "beskrivelse": "Kærgården smørbar: 200 g. Kg-pris 60,00. Maks. 3 pakker pr. kunde. 1 pakke",
      "gaelder_nu": true,
      "foerst_set": "2026-11-26"
     },

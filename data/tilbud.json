@@ -27,14 +27,14 @@
  },
  "Kærgården Let|Kvickly|2026-11-20|2026-11-26|12.0|1|200": {
   "antal": 1,
-  "beskrivelse": "200 g. Kg-pris 60,00. Maks. 3 pakker pr. kunde. 1 pakke",
+  "beskrivelse": "200 g. Kg-pris 60,00. 1 pakke. Maks. 3 pakker pr. kunde",
   "butik": "Kvickly",
   "enhed": "kg",
   "enhedspris": 60.0,
   "foerst_set": "2026-11-26",
   "fra": "2026-11-20",
   "gram": 200,
-  "id": "XWLEFB4AaBj0CfBTxyDxQ",
+  "id": "BHezf074UYzyjOubpCRrD",
   "kilopris": 60.0,
   "maengde": 200,
   "noter": [
