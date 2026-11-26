@@ -402,7 +402,7 @@
   "enhedspris": 12.12,
   "foerst_set": "2026-11-25",
   "fra": "2026-11-27",
-  "id": "wNOcphtDrzBgQ4S5G-ajC",
+  "id": "X7j2ClCoXK3j1mgHFU2rI",
   "literpris": 12.12,
   "maengde": 33,
   "noter": [
@@ -593,6 +593,30 @@
    33
   ],
   "stykpris": 3.5,
+  "til": "2026-11-28",
+  "type": "?",
+  "vare": "Pepsi Max"
+ },
+ "Pepsi Max|nemlig|2026-11-23|2026-11-28|69.95|24|33": {
+  "antal": 24,
+  "beskrivelse": "20 - 24 x 0,33 l · Frit valg / Flere varianter",
+  "butik": "nemlig",
+  "cl": 33,
+  "enhed": "l",
+  "enhedspris": 8.83,
+  "foerst_set": "2026-11-27",
+  "fra": "2026-11-23",
+  "id": "orarevWVUEJlmAnOX3zsF",
+  "literpris": 8.83,
+  "maengde": 33,
+  "noter": [],
+  "overskrift": "Faxe Kondi eller Pepsi Max sodavand",
+  "pris": 69.95,
+  "status": "ja",
+  "stoerrelser_cl": [
+   33
+  ],
+  "stykpris": 2.91,
   "til": "2026-11-28",
   "type": "?",
   "vare": "Pepsi Max"
