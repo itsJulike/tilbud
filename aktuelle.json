@@ -1,5 +1,5 @@
 {
- "opdateret": "2026-11-27T00:52+01:00",
+ "opdateret": "2026-11-27T16:13+01:00",
  "i_dag": "2026-11-27",
  "varer": [
   {
@@ -30,7 +30,7 @@
     "gaelder_nu": true,
     "foerst_set": "2026-11-25"
    },
-   "antal_nu": 10,
+   "antal_nu": 11,
    "tilbud": [
     {
      "butik": "365discount",
@@ -52,6 +52,27 @@
      "beskrivelse": "Faxe Kondi eller Pepsi Max: Sælges i hele forpakninger Maks. 6 pakker pr. kunde 24 x 33 cl. Literpris 8,21 + pant. 1 pakke.",
      "gaelder_nu": true,
      "foerst_set": "2026-11-25"
+    },
+    {
+     "butik": "Løvbjerg",
+     "pris": 64.99,
+     "antal": 24,
+     "cl": 33,
+     "literpris": 8.21,
+     "maengde": 33,
+     "enhed": "l",
+     "enhedspris": 8.21,
+     "pakning": "24 × 33 cl",
+     "type": "flaske",
+     "stykpris": 2.71,
+     "fra": "2026-11-26",
+     "til": "2026-11-28",
+     "noter": [
+      "max 6 kasser"
+     ],
+     "beskrivelse": "Pepsi Max 📦 24 x 33 cl PET-flasker: 🥤🔥 BESTIL OG HENT! – JA TAK PÅ PEPSI MAX ELLER FAXE KONDI ! 🔥🥤 ✔️ DETTE TILBUD FINDES I BUTIKKEN TIL SAMME PRIS ✔️ ♥️OBS DER ER IKKE BLEVET LEVERET FAXE KONDI PINK LEMONADE♥️ 😍 Afhent fra fredag – så er det tid til at fylde køleskabet op! 😍 🥤 Pepsi Max el. Faxe kondi 📦 24 x 33 cl PET-flasker 💥BLACK FRIDAY – JA TAK PRIS 💥 ✨ KUN 64,99 KR. PR. KASSE + PANT ✨ 🚨 MAX. 6 KASSER PR. KUNDE 📅 AFHENTNING FRA FREDAG MORGEN I BUTIKKEN OVERFOR GRØNT AFDELINGEN ♥️ 📍 Løvbjerg Horsens",
+     "gaelder_nu": true,
+     "foerst_set": "2026-11-27"
     },
     {
      "butik": "Løvbjerg",
@@ -349,6 +370,25 @@
      "beskrivelse": "Kærgården smør: ",
      "gaelder_nu": true,
      "foerst_set": "2026-11-26"
+    },
+    {
+     "butik": "LET-KØB",
+     "pris": 18.0,
+     "antal": 1,
+     "gram": 200,
+     "kilopris": 90.0,
+     "maengde": 200,
+     "enhed": "kg",
+     "enhedspris": 90.0,
+     "pakning": "200 g",
+     "type": "?",
+     "stykpris": 18.0,
+     "fra": "2026-11-30",
+     "til": "2026-12-13",
+     "noter": [],
+     "beskrivelse": "Kærgården: Original eller Let. 200 g. Kg pris 90,00 Pr. stk.",
+     "gaelder_nu": false,
+     "foerst_set": "2026-11-27"
     },
     {
      "butik": "Lidl",

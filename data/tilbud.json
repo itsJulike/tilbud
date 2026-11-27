@@ -52,6 +52,30 @@
   "type": "?",
   "vare": "Kærgården Let"
  },
+ "Kærgården Let|LET-KØB|2026-11-30|2026-12-13|18.0|1|200": {
+  "antal": 1,
+  "beskrivelse": "Original eller Let. 200 g. Kg pris 90,00 Pr. stk.",
+  "butik": "LET-KØB",
+  "enhed": "kg",
+  "enhedspris": 90.0,
+  "foerst_set": "2026-11-27",
+  "fra": "2026-11-30",
+  "gram": 200,
+  "id": "noY-aXe1mwJ4HQWCO1CG7",
+  "kilopris": 90.0,
+  "maengde": 200,
+  "noter": [],
+  "overskrift": "Kærgården",
+  "pris": 18.0,
+  "status": "ja",
+  "stoerrelser_g": [
+   200
+  ],
+  "stykpris": 18.0,
+  "til": "2026-12-13",
+  "type": "?",
+  "vare": "Kærgården Let"
+ },
  "Kærgården Let|Lidl|2026-05-03|2026-12-31|18.95|1|200": {
   "antal": 1,
   "beskrivelse": "200 g / stk. Pr. kg 94,75 Fast lav pris",
@@ -367,6 +391,32 @@
   "type": "?",
   "vare": "Pepsi Max"
  },
+ "Pepsi Max|Løvbjerg|2026-11-26|2026-11-28|64.99|24|33": {
+  "antal": 24,
+  "beskrivelse": "🥤🔥 BESTIL OG HENT! – JA TAK PÅ PEPSI MAX ELLER FAXE KONDI ! 🔥🥤 ✔️ DETTE TILBUD FINDES I BUTIKKEN TIL SAMME PRIS ✔️ ♥️OBS DER ER IKKE BLEVET LEVERET FAXE KONDI PINK LEMONADE♥️ 😍 Afhent fra fredag – så er det tid til at fylde køleskabet op! 😍 🥤 Pepsi Max el. Faxe kondi 📦 24 x 33 cl PET-flasker 💥BLACK FRIDAY – JA TAK PRIS 💥 ✨ KUN 64,99 KR. PR. KASSE + PANT ✨ 🚨 MAX. 6 KASSER PR. KUNDE 📅 AFHENTNING FRA FREDAG MORGEN I BUTIKKEN OVERFOR GRØNT AFDELINGEN ♥️ 📍 Løvbjerg Horsens",
+  "butik": "Løvbjerg",
+  "cl": 33,
+  "enhed": "l",
+  "enhedspris": 8.21,
+  "foerst_set": "2026-11-27",
+  "fra": "2026-11-26",
+  "id": "V-NX43p66-0qhq2nXWb8s",
+  "literpris": 8.21,
+  "maengde": 33,
+  "noter": [
+   "max 6 kasser"
+  ],
+  "overskrift": "Pepsi Max 📦 24 x 33 cl PET-flasker",
+  "pris": 64.99,
+  "status": "ja",
+  "stoerrelser_cl": [
+   33
+  ],
+  "stykpris": 2.71,
+  "til": "2026-11-28",
+  "type": "flaske",
+  "vare": "Pepsi Max"
+ },
  "Pepsi Max|Løvbjerg|2026-11-27|2026-12-03|64.99|24|33": {
   "antal": 24,
   "beskrivelse": "Gælder viste varianter",
@@ -402,7 +452,7 @@
   "enhedspris": 12.12,
   "foerst_set": "2026-11-25",
   "fra": "2026-11-27",
-  "id": "X7j2ClCoXK3j1mgHFU2rI",
+  "id": "wNOcphtDrzBgQ4S5G-ajC",
   "literpris": 12.12,
   "maengde": 33,
   "noter": [

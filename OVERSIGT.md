@@ -1,6 +1,6 @@
 # Tilbud
 
-Opdateret 27/11/2026 kl. 00:52. Data fra eTilbudsavis. Sorteret efter pris pr. liter eller kg, så forskellige størrelser kan sammenlignes. Priserne er uden pant.
+Opdateret 27/11/2026 kl. 16:13. Data fra eTilbudsavis. Sorteret efter pris pr. liter eller kg, så forskellige størrelser kan sammenlignes. Priserne er uden pant.
 
 ## 🥤 Pepsi Max
 
@@ -30,6 +30,7 @@ Opdateret 27/11/2026 kl. 00:52. Data fra eTilbudsavis. Sorteret efter pris pr. l
 | Kr/l | Kr/stk | Butik | Pris | Pakning | Type | Periode | Noter |
 |---:|---:|---|---:|---|:-:|---|---|
 | **8,21** | 2,71 | 365discount | 65,00 | 24 × 33 cl | ? | tor 26/11 – ons 2/12 | max 6 pakker |
+| **8,21** | 2,71 | Løvbjerg | 64,99 | 24 × 33 cl | flaske | tor 26/11 – lør 28/11 | max 6 kasser |
 | **8,21** | 2,71 | Løvbjerg | 64,99 | 24 × 33 cl | ? | fre 27/11 – tor 3/12 | antal udregnet fra samlet mængde |
 | **8,83** | 2,91 | nemlig | 69,95 | 24 × 33 cl | ? | man 23/11 – lør 28/11 |  |
 | **9,47** | 3,12 | Netto | 75,00 | 24 × 33 cl | ? | lør 21/11 – fre 27/11 | max 6 stk |
@@ -61,13 +62,13 @@ Opdateret 27/11/2026 kl. 00:52. Data fra eTilbudsavis. Sorteret efter pris pr. l
 | tir 1/12 | Brugsen | **80,00** | 16,00 | 200 g | Løvbjerg 84,95 kr/kg (200 g) |
 | ons 2/12 | Brugsen | **80,00** | 16,00 | 200 g | Løvbjerg 84,95 kr/kg (200 g) |
 | tor 3/12 | REMA 1000 | **50,00** | 10,00 | 200 g | Brugsen 80,00 kr/kg (200 g) |
-| fre 4/12 | REMA 1000 | **50,00** | 10,00 | 200 g | Lidl 94,75 kr/kg (200 g) |
-| lør 5/12 | REMA 1000 | **50,00** | 10,00 | 200 g | Lidl 94,75 kr/kg (200 g) |
-| søn 6/12 | Lidl | **94,75** | 18,95 | 200 g |  |
-| man 7/12 | Lidl | **94,75** | 18,95 | 200 g |  |
-| tir 8/12 | Lidl | **94,75** | 18,95 | 200 g |  |
-| ons 9/12 | Lidl | **94,75** | 18,95 | 200 g |  |
-| tor 10/12 | Lidl | **94,75** | 18,95 | 200 g |  |
+| fre 4/12 | REMA 1000 | **50,00** | 10,00 | 200 g | LET-KØB 90,00 kr/kg (200 g) |
+| lør 5/12 | REMA 1000 | **50,00** | 10,00 | 200 g | LET-KØB 90,00 kr/kg (200 g) |
+| søn 6/12 | LET-KØB | **90,00** | 18,00 | 200 g | Lidl 94,75 kr/kg (200 g) |
+| man 7/12 | LET-KØB | **90,00** | 18,00 | 200 g | Lidl 94,75 kr/kg (200 g) |
+| tir 8/12 | LET-KØB | **90,00** | 18,00 | 200 g | Lidl 94,75 kr/kg (200 g) |
+| ons 9/12 | LET-KØB | **90,00** | 18,00 | 200 g | Lidl 94,75 kr/kg (200 g) |
+| tor 10/12 | LET-KØB | **90,00** | 18,00 | 200 g | Lidl 94,75 kr/kg (200 g) |
 
 ### Gælder nu
 
@@ -82,6 +83,7 @@ Opdateret 27/11/2026 kl. 00:52. Data fra eTilbudsavis. Sorteret efter pris pr. l
 | Kr/kg | Kr/stk | Butik | Pris | Pakning | Type | Periode | Noter |
 |---:|---:|---|---:|---|:-:|---|---|
 | **50,00** | 10,00 | REMA 1000 | 10,00 | 200 g | ? | tor 3/12 – lør 5/12 | max 6 stk, Kærgården Let ikke nævnt |
+| **90,00** | 18,00 | LET-KØB | 18,00 | 200 g | ? | man 30/11 – søn 13/12 |  |
 
 ---
 
