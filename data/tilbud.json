@@ -339,14 +339,14 @@
  },
  "Pepsi Max|Brugsen|2026-11-20|2026-12-03|13.0|1|50": {
   "antal": 1,
-  "beskrivelse": "Flere varianter. 50-150 cl. Literpris maks. 26,00 + pant.",
+  "beskrivelse": "Flere varianter. 50-150 cl. Literpris maks. 26,00 + pant. Ikke egnet til børn",
   "butik": "Brugsen",
   "cl": 50,
   "enhed": "l",
   "enhedspris": 26.0,
   "foerst_set": "2026-11-25",
   "fra": "2026-11-20",
-  "id": "UZrpou6YnHEzQArNi1TmB",
+  "id": "y6jYlbHPgu_XlF3MOnN7U",
   "literpris": 26.0,
   "maengde": 50,
   "noter": [

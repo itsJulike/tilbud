@@ -1,6 +1,6 @@
 {
- "opdateret": "2026-11-27T16:13+01:00",
- "i_dag": "2026-11-27",
+ "opdateret": "2026-11-28T00:28+01:00",
+ "i_dag": "2026-11-28",
  "varer": [
   {
    "navn": "Pepsi Max",
@@ -30,7 +30,7 @@
     "gaelder_nu": true,
     "foerst_set": "2026-11-25"
    },
-   "antal_nu": 11,
+   "antal_nu": 10,
    "tilbud": [
     {
      "butik": "365discount",
@@ -113,27 +113,6 @@
      "beskrivelse": "Faxe Kondi eller Pepsi Max sodavand: 20 - 24 x 0,33 l · Frit valg / Flere varianter",
      "gaelder_nu": true,
      "foerst_set": "2026-11-27"
-    },
-    {
-     "butik": "Netto",
-     "pris": 75.0,
-     "antal": 24,
-     "cl": 33,
-     "literpris": 9.47,
-     "maengde": 33,
-     "enhed": "l",
-     "enhedspris": 9.47,
-     "pakning": "24 × 33 cl",
-     "type": "?",
-     "stykpris": 3.12,
-     "fra": "2026-11-21",
-     "til": "2026-11-27",
-     "noter": [
-      "max 6 stk"
-     ],
-     "beskrivelse": "Faxe Kondi eller Pepsi Max sodavand: PRISEN GÆLDER KUN VED KØB AF HELE FORPAKNINGER. 24 x 33 cl. + pant. Pr. liter 9,47. Max. 6 stk. pr. variant pr. kunde pr. dag til denne pris",
-     "gaelder_nu": true,
-     "foerst_set": "2026-11-25"
     },
     {
      "butik": "nemlig",
@@ -271,7 +250,7 @@
      "noter": [
       "flere størrelser: 50 cl–150 cl"
      ],
-     "beskrivelse": "Faxe Kondi, Booster eller Pepsi Max: Flere varianter. 50-150 cl. Literpris maks. 26,00 + pant.",
+     "beskrivelse": "Faxe Kondi, Booster eller Pepsi Max: Flere varianter. 50-150 cl. Literpris maks. 26,00 + pant. Ikke egnet til børn",
      "gaelder_nu": true,
      "foerst_set": "2026-11-25"
     }

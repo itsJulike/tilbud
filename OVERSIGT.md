@@ -1,6 +1,6 @@
 # Tilbud
 
-Opdateret 27/11/2026 kl. 16:13. Data fra eTilbudsavis. Sorteret efter pris pr. liter eller kg, så forskellige størrelser kan sammenlignes. Priserne er uden pant.
+Opdateret 28/11/2026 kl. 00:28. Data fra eTilbudsavis. Sorteret efter pris pr. liter eller kg, så forskellige størrelser kan sammenlignes. Priserne er uden pant.
 
 ## 🥤 Pepsi Max
 
@@ -10,7 +10,6 @@ Opdateret 27/11/2026 kl. 16:13. Data fra eTilbudsavis. Sorteret efter pris pr. l
 
 | Dag | Billigst | Kr/l | Kr/stk | Pakning | Næstbedst |
 |---|---|---:|---:|---|---|
-| fre 27/11 | 365discount | **8,21** | 2,71 | 24 × 33 cl | Løvbjerg 8,21 kr/l (24 × 33 cl) |
 | lør 28/11 | 365discount | **8,21** | 2,71 | 24 × 33 cl | Løvbjerg 8,21 kr/l (24 × 33 cl) |
 | søn 29/11 | 365discount | **8,21** | 2,71 | 24 × 33 cl | Løvbjerg 8,21 kr/l (24 × 33 cl) |
 | man 30/11 | 365discount | **8,21** | 2,71 | 24 × 33 cl | Løvbjerg 8,21 kr/l (24 × 33 cl) |
@@ -24,6 +23,7 @@ Opdateret 27/11/2026 kl. 16:13. Data fra eTilbudsavis. Sorteret efter pris pr. l
 | tir 8/12 | føtex | **12,37** | 4,08 | 12 × 33 cl |  |
 | ons 9/12 | føtex | **12,37** | 4,08 | 12 × 33 cl |  |
 | tor 10/12 | føtex | **12,37** | 4,08 | 12 × 33 cl |  |
+| fre 11/12 | føtex | **12,37** | 4,08 | 12 × 33 cl |  |
 
 ### Gælder nu
 
@@ -33,7 +33,6 @@ Opdateret 27/11/2026 kl. 16:13. Data fra eTilbudsavis. Sorteret efter pris pr. l
 | **8,21** | 2,71 | Løvbjerg | 64,99 | 24 × 33 cl | flaske | tor 26/11 – lør 28/11 | max 6 kasser |
 | **8,21** | 2,71 | Løvbjerg | 64,99 | 24 × 33 cl | ? | fre 27/11 – tor 3/12 | antal udregnet fra samlet mængde |
 | **8,83** | 2,91 | nemlig | 69,95 | 24 × 33 cl | ? | man 23/11 – lør 28/11 |  |
-| **9,47** | 3,12 | Netto | 75,00 | 24 × 33 cl | ? | lør 21/11 – fre 27/11 | max 6 stk |
 | **10,60** | 3,50 | nemlig | 69,95 | 20 × 33 cl | ? | man 23/11 – lør 28/11 |  |
 | **10,73** | 3,54 | LET-KØB | 85,00 | 24 × 33 cl | ? | man 16/11 – søn 29/11 | afhentningspris, „flere varianter“, Pepsi Max ikke nævnt |
 | **12,12** | 4,00 | Løvbjerg | 79,99 | 20 × 33 cl | dåse | fre 27/11 – tor 3/12 | flere pakninger: 6–20 stk |
@@ -55,7 +54,6 @@ Opdateret 27/11/2026 kl. 16:13. Data fra eTilbudsavis. Sorteret efter pris pr. l
 
 | Dag | Billigst | Kr/kg | Kr/stk | Pakning | Næstbedst |
 |---|---|---:|---:|---|---|
-| fre 27/11 | Brugsen | **80,00** | 16,00 | 200 g | Løvbjerg 84,95 kr/kg (200 g) |
 | lør 28/11 | Brugsen | **80,00** | 16,00 | 200 g | Løvbjerg 84,95 kr/kg (200 g) |
 | søn 29/11 | Brugsen | **80,00** | 16,00 | 200 g | Løvbjerg 84,95 kr/kg (200 g) |
 | man 30/11 | Brugsen | **80,00** | 16,00 | 200 g | Løvbjerg 84,95 kr/kg (200 g) |
@@ -69,6 +67,7 @@ Opdateret 27/11/2026 kl. 16:13. Data fra eTilbudsavis. Sorteret efter pris pr. l
 | tir 8/12 | LET-KØB | **90,00** | 18,00 | 200 g | Lidl 94,75 kr/kg (200 g) |
 | ons 9/12 | LET-KØB | **90,00** | 18,00 | 200 g | Lidl 94,75 kr/kg (200 g) |
 | tor 10/12 | LET-KØB | **90,00** | 18,00 | 200 g | Lidl 94,75 kr/kg (200 g) |
+| fre 11/12 | LET-KØB | **90,00** | 18,00 | 200 g | Lidl 94,75 kr/kg (200 g) |
 
 ### Gælder nu
 
